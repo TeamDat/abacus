@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import firebase from 'firebase';
 var config = {
     apiKey: "AIzaSyBYBcOLBvBeZYl4V8CcXo8a6d0Uh2JNh08",
     authDomain: "abacus-teamdat.firebaseapp.com",

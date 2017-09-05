@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { login, resetPassword } from './auth'
+import React, { Component } from 'react';
+import { login, loginWithGoogle, resetPassword } from './auth';
 
 function setErrorMsg(error) {
   return {
@@ -44,6 +44,9 @@ export default class Login extends Component {
           }
           <button type="submit" className="btn btn-primary">Login</button>
         </form>
+          <br/>
+          <button onClick={this.state.loginMessage = loginWithGoogle()} className="btn btn-primary">Or sign in with Google</button>
+          </div>
       </div>
     )
   }
