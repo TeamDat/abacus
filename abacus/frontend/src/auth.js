@@ -1,4 +1,5 @@
 import { ref, fireAuth } from './fire';
+import { UserInfo } from '.'
 
 export function auth (email, pw) {
   return fireAuth().createUserWithEmailAndPassword(email, pw)
