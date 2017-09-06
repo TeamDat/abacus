@@ -3,29 +3,25 @@ import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import {logout} from './auth';
-import {Link} from "react-router-dom";
-
 
 
 export default class Header extends React.Component {
     render() {
         return (
-            <Navbar inverse>
+            <Navbar inverse >
                     <Navbar.Brand>
                         <a href='/'>Abacus</a>
                     </Navbar.Brand>
                     {this.props.authed
                         ?
-                        <Nav >
-                            <NavItem>
-                                <Link to="/about">About</Link>
-                            </NavItem>
+                        <Nav pullRight>
+                            <NavItem Link to href="/home">Start</NavItem>
                             <NavItem onClick={() => {
                                 logout();
                             }}> Logout </NavItem>
                         </Nav>
                         :
-                        <Nav >
+                        <Nav pullRight>
                             <NavItem Link to href="/about">About</NavItem>
                             <NavItem Link to href="/login">Login</NavItem>
                             <NavItem Link to href="/register">Register</NavItem>
