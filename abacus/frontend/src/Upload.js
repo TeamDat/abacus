@@ -12,7 +12,8 @@
 import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
-import DragBox from './DragBox.js'
+import DragBox from './DragBox.js';
+import v1DocumentPost from './awsAPI.js';
 
 export default class Upload extends React.Component {
     constructor(props) {
@@ -32,6 +33,7 @@ export default class Upload extends React.Component {
         if (!imageType.test(file.type)) {
             return;
         }
+        v1DocumentPost([file.type],file);
         this.setState({imageFile: file});
     }
 
