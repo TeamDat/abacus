@@ -12,8 +12,8 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-import apiGateway from 'apiGatewayCore';
-import uritemplate from '../node_modules/url-template'
+import apiGateway from "aws-api-gateway-client"
+import uritemplate from "url-template"
 
 var apigClientFactory = {};
 apigClientFactory.newClient = function (config) {
