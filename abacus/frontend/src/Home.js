@@ -37,7 +37,7 @@ export default class Home extends Component {
               <Grid>
                 <Row>
                   <Col md={6} mdPush={6}><Preview convert={this.state.convert} /></Col>
-                  <Col md={6} mdPull={6}><Upload onConvert={() => this.convert()}/></Col>
+                  <Col md={6} mdPull={6}><Upload currentUser={this.state.currentUser} onConvert={() => this.convert()}/></Col>
                 </Row>
               </Grid>
             </div>

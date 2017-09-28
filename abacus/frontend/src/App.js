@@ -85,7 +85,7 @@ class App extends Component {
                     loading: false
                 })
             }
-        })
+        });
     }
 
     componentWillUnmount() {
@@ -106,7 +106,7 @@ class App extends Component {
                                 <Route path='/about' exact component={About}/>
                                 <PublicRoute authed={this.state.authed} path='/login' component={Login}/>
                                 <PublicRoute authed={this.state.authed} path='/register' component={Register}/>
-                                <PrivateRoute authed={this.state.authed} path='/home' component={Home}/>
+                                <PrivateRoute authed={this.state.authed} currentUser={this.state.currentUser} path='/home' component={Home}/>
                                 <Route authed={this.state.authed} path='/about' component={About}/>
                                 <Route render={() => <h3>No Match</h3>}/>
                             </Switch>
