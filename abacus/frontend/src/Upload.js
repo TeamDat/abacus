@@ -13,6 +13,7 @@ import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import DragBox from './DragBox.js';
+import apigClientFactory from 'aws-api-gateway-client';
 
 export default class Upload extends React.Component {
     constructor(props) {
@@ -32,7 +33,26 @@ export default class Upload extends React.Component {
         if (!imageType.test(file.type)) {
             return;
         }
-        this.state.awsAPIClient.v1DocumentPost("test",file);
+        var config = {invokeUrl:'https://k7on8y7mb9.execute-api.us-east-1.amazonaws.com/beta', apiKey: ''};
+        var apigClient = apigClientFactory.newClient(config);
+        var additionalParams = {
+            queryParams: {
+                documentId: 'testId'
+            }
+        };
+        var body = {
+            'test': 'test'
+        };
+        //this method's parameters are poorly structured and I am not sure if this is a valid way to call it
+        //or why it ignores the {documentId} parameter when I try to call it the correct way
+        // https://www.npmjs.com/package/aws-api-gateway-client
+        // the included awsAPI.js and all that does not function and should not be used
+        apigClient.invokeApi('testId', '/v1/document/testId', 'PUT', file)
+            .then(function(result){
+                console.log("upload success");
+            }).catch( function(result){
+                console.log("upload failed");
+            });
         this.setState({imageFile: file});
     }
 

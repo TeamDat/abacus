@@ -21,6 +21,7 @@ import Register from './Register';
 import Home from './Home';
 import Header from "./Header";
 import About from './About';
+import apigClientFactory from 'aws-api-gateway-client';
 
 function PrivateRoute({component: Component, authed, ...rest}) {
     return (
@@ -45,15 +46,11 @@ function PublicRoute({component: Component, authed, ...rest}) {
 class App extends Component {
     constructor(props) {
         super(props);
-        var apigClient = apigClientFactory.newClient({
-            apiKey: 'L7lBQmSawx7fin9pOTjiZlWPCCA4UGIaKRdVj2Zh'
-        });
         this.state = {
             messages: [],
             authed: false,
             loading: true,
-            currentUser: null,
-            awsAPIClient = apigClient;
+            currentUser: null
         };
     }
 
@@ -109,7 +106,7 @@ class App extends Component {
                                 <Route path='/about' exact component={About}/>
                                 <PublicRoute authed={this.state.authed} path='/login' component={Login}/>
                                 <PublicRoute authed={this.state.authed} path='/register' component={Register}/>
-                                <PrivateRoute authed={this.state.authed} awsAPIClient={this.state.awsAPIClient} path='/home' component={Home}/>
+                                <PrivateRoute authed={this.state.authed} path='/home' component={Home}/>
                                 <Route authed={this.state.authed} path='/about' component={About}/>
                                 <Route render={() => <h3>No Match</h3>}/>
                             </Switch>
