@@ -48,8 +48,10 @@ export default class Upload extends React.Component {
         var boxidx = this.state.boxes.length - 1;
         var boxX = boxArray[boxidx].x;
         var boxY = boxArray[boxidx].y;
-        boxArray[boxidx].width = event.pageX - boxX;
-        boxArray[boxidx].height = event.pageY - boxY;
+        var e = event.target;
+        var dim = e.getBoundingClientRect();
+        boxArray[boxidx].width = event.clientX - dim.left - boxX;
+        boxArray[boxidx].height = event.clientY - dim.top - boxY;
         this.setState({boxes: boxArray});
     }
 
@@ -58,10 +60,12 @@ export default class Upload extends React.Component {
         dragIcon.src = "blank.png";
         event.dataTransfer.setDragImage(dragIcon, -5, -5);
         var box = Object();
-        box.x = event.pageX;
-        box.y = event.pageY;
-        box.width = 1;
-        box.height = 1;
+        var e = event.target;
+        var dim = e.getBoundingClientRect();
+        box.x = event.clientX - dim.left;
+        box.y = event.clientY - dim.top;
+        box.width = 15;
+        box.height = 5;
         var boxArray = this.state.boxes;
         box.number = this.state.boxes.length + 1;
         boxArray.push(box);
