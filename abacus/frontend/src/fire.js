@@ -22,4 +22,5 @@ var fire = firebase.initializeApp(config);
 export const ref = firebase.database().ref();
 export const fireAuth = firebase.auth;
 export const fireStorage = firebase.storage().ref();
+export const fireStoragePending = firebase.app().storage('gs://abacus-pending').ref();
 export default fire;

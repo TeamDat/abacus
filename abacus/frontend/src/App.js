@@ -78,7 +78,7 @@ class App extends Component {
                     authed: true,
                     loading: false,
                     currentUser: user.uid
-                })
+                });
             } else {
                 this.setState({
                     authed: false,
