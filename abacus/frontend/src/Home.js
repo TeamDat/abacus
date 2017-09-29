@@ -15,6 +15,8 @@ import Row from 'react-bootstrap/lib/Row'
 import Col from 'react-bootstrap/lib/Col'
 import Upload from './Upload'
 import Preview from './Preview'
+import {fireStoragePending} from './fire';
+import {fireAuth} from './fire';
 
 
 export default class Home extends Component {
@@ -26,8 +28,20 @@ export default class Home extends Component {
         this.convert = this.convert.bind(this);
     }
 
-    convert() {
-        this.setState({convert: "true"})
+    convert(file, boxes) {
+        if (boxes) {
+            var boxesJSON = JSON.stringify(boxes);
+            var metadata = {
+                customMetadata: {
+                    'boxes': boxesJSON
+                }
+            };
+            var imgRef = fireStoragePending.child(fireAuth().currentUser + '/' + file.name);
+            imgRef.put(file, metadata).then(function(snapshot) {
+                console.log('uploaded file successfully');
+            });
+            this.setState({convert: "true"});
+        }
     }
 
     render() {
@@ -39,7 +53,7 @@ export default class Home extends Component {
               <Grid>
                 <Row>
                   <Col md={6} mdPush={6}><Preview convert={this.state.convert} /></Col>
-                  <Col md={6} mdPull={6}><Upload currentUser={this.props.currentUser} onConvert={() => this.convert()}/></Col>
+                  <Col md={6} mdPull={6}><Upload currentUser={this.props.currentUser} onConvert={(file, boxes) => this.convert(file, boxes)}/></Col>
                 </Row>
               </Grid>
             </div>

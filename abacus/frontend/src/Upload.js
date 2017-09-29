@@ -136,7 +136,7 @@ export default class Upload extends React.Component {
                     <div style={convert_container_style}>
                         <h4>Select the document sections to be converted.</h4>
                         <div style={button_container}>
-                            <Button bsStyle="primary" bsSize="large" block onClick={this.props.onConvert}>Convert</Button>
+                            <Button bsStyle="primary" bsSize="large" block onClick={() => this.props.onConvert(this.state.imageFile, this.state.boxes)}>Convert</Button>
                         </div>
                     </div>
                 </div>
