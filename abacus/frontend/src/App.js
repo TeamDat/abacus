@@ -21,7 +21,6 @@ import Register from './Register';
 import Home from './Home';
 import Header from "./Header";
 import About from './About';
-import apigClientFactory from 'aws-api-gateway-client';
 
 function PrivateRoute({component: Component, authed, ...rest}) {
     return (
