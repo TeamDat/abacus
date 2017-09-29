@@ -33,20 +33,37 @@ export default class DragBox extends React.Component {
             "borderWidth": "1px",
             "borderColor": "#00e0f0"
         };
-        var number_style = {
-            "position": "relative",
-            "width": "16",
-            "height": "32",
-            "top": "0",
-            "left": "0",
-            "backgroundColor": "#00e0f0",
-            "color": "white",
-            "fontSize": "50%"
+        if (number < 10) {
+            var box_style = {
+                "position": "relative",
+                "width": "10",
+                "height": "20",
+                "top": "-1",
+                "left": "-10",
+                "backgroundColor": "#00e0f0",
+                "color": "white",
+                "fontSize": "5"
+            }
+        } else {
+            var box_style = {
+                "position": "relative",
+                "width": "18",
+                "height": "20",
+                "top": "-1",
+                "left": "-18",
+                "backgroundColor": "#00e0f0",
+                "color": "white",
+                "fontSize": "5"
+            }
         }
+        var number_style = {
+            "fontSize": "15"
+        }
+
         return (
             <div style={style}>
-                <div style={number_style}>
-                    <p>{number}</p>
+                <div style={box_style}>
+                    <p style={number_style}>{number}</p>
                 </div>
             </div>
         );

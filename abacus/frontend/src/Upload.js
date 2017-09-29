@@ -50,8 +50,8 @@ export default class Upload extends React.Component {
         var boxY = boxArray[boxidx].y;
         var e = event.target;
         var dim = e.getBoundingClientRect();
-        boxArray[boxidx].width = event.clientX - dim.left - boxX;
-        boxArray[boxidx].height = event.clientY - dim.top - boxY;
+        boxArray[boxidx].width = event.clientX - dim.left - boxX + 55;
+        boxArray[boxidx].height = event.clientY - dim.top - boxY + 43;
         this.setState({boxes: boxArray});
     }
 
@@ -62,8 +62,8 @@ export default class Upload extends React.Component {
         var box = Object();
         var e = event.target;
         var dim = e.getBoundingClientRect();
-        box.x = event.clientX - dim.left;
-        box.y = event.clientY - dim.top;
+        box.x = event.clientX - dim.left + 55;
+        box.y = event.clientY - dim.top + 43;
         box.width = 15;
         box.height = 5;
         var boxArray = this.state.boxes;
