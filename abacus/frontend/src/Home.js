@@ -20,6 +20,8 @@ import Preview from './Preview'
 export default class Home extends Component {
     constructor(props) {
         super(props);
+        this.props = props;
+        console.log(props);
         this.state = {convert: "false"};
         this.convert = this.convert.bind(this);
     }
@@ -37,7 +39,7 @@ export default class Home extends Component {
               <Grid>
                 <Row>
                   <Col md={6} mdPush={6}><Preview convert={this.state.convert} /></Col>
-                  <Col md={6} mdPull={6}><Upload onConvert={() => this.convert()}/></Col>
+                  <Col md={6} mdPull={6}><Upload currentUser={this.props.currentUser} onConvert={() => this.convert()}/></Col>
                 </Row>
               </Grid>
             </div>

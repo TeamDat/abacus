@@ -12,7 +12,11 @@
 import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
-import DragBox from './DragBox.js'
+import DragBox from './DragBox.js';
+//import apigClientFactory from 'aws-api-gateway-client';
+import {fireStoragePending} from './fire';
+import {fireAuth} from './fire';
+
 
 export default class Upload extends React.Component {
     constructor(props) {
@@ -32,6 +36,10 @@ export default class Upload extends React.Component {
         if (!imageType.test(file.type)) {
             return;
         }
+        var imgRef = fireStoragePending.child(fireAuth().currentUser + '/' + file.name);
+        imgRef.put(file).then(function(snapshot) {
+            console.log('uploaded file successfully');
+        });
         this.setState({imageFile: file});
     }
 
