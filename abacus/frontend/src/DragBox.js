@@ -27,8 +27,8 @@ export default class DragBox extends React.Component {
             "position": "absolute",
             "width": width.toString(),
             "height": height.toString(),
-            "left": (x-125).toString() + "px",
-            "top": (y-170).toString() + "px",
+            "left": (x).toString() + "px",
+            "top": (y).toString() + "px",
             "borderStyle": "solid",
             "borderWidth": "1px",
             "borderColor": "#00e0f0"
