@@ -36,7 +36,7 @@ export default class Upload extends React.Component {
         if (!imageType.test(file.type)) {
             return;
         }
-        var imgRef = fireStoragePending.child(fireAuth().currentUser + '/' + file.name);
+        var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
         imgRef.put(file).then(function(snapshot) {
             console.log('uploaded file successfully');
         });

@@ -36,7 +36,7 @@ export default class Home extends Component {
                     'boxes': boxesJSON
                 }
             };
-            var imgRef = fireStoragePending.child(fireAuth().currentUser + '/' + file.name);
+            var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
             imgRef.put(file, metadata).then(function(snapshot) {
                 console.log('uploaded file successfully');
             });
