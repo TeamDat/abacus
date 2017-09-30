@@ -41,6 +41,37 @@ export default class Upload extends React.Component {
             console.log('uploaded file successfully');
         });
         this.setState({imageFile: file});
+
+        //Node module issue
+        var express = require('express');
+        var router = express.Router();
+        const Multer = require('multer');
+        const multer = Multer({
+          storage: Multer.memoryStorage(),
+          limits: {
+            fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+          }
+        });
+
+        router.get('/:imageId', function (req, res, next) {
+            //Hard coded and will fix that later.
+            var stream = fireStoragePending.file('IMG_3971.jpg').createReadStream();
+            res.writeHead(200, {'Content-Type': 'image/jpg' });
+
+            stream.on('data', function (data) {
+                res.write(data);
+              });
+            
+            stream.on('error', function (err) {
+                console.log('error reading stream', err);
+            });
+
+            stream.on('end', function () {
+                res.end();
+              });
+        });
+
+        module.exports = router;
     }
 
     uploadClicked(event) {
