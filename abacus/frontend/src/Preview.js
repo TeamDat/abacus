@@ -14,15 +14,35 @@ import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import previewImg from '../src/rendered.png';
+import os from 'os'
+import {fireStorage, fireStorageComplete, fireStoragePending} from "./fire";
+import {fireAuth} from "./fire";
+
 
 export default class Upload extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showLatex: false};
+        this.state = {showLatex: false, imageFile: ''};
         this.props = props;
         this.latex = this.latex.bind(this);
         this.pdf = this.pdf.bind(this);
+    }
+
+    download() {
+        const options = {
+            // The path to which the file should be downloaded, e.g. "./file.txt"
+            destination: "./tmp/this.filename",
+        };
+
+        this.state.imageFile = fireStoragePending.file(fireAuth().currentUser.uid + '/' + this.filename).download(options).then(() => {
+            console.log(
+                `downloaded`
+            );
+        })
+            .catch(err => {
+                console.error('ERROR:', err);
+            });
+
     }
 
     latex() {
@@ -119,11 +139,21 @@ export default class Upload extends React.Component {
         );
 
         if (!this.state.showLatex) {
+            if (this.state.imageFile !== '') {
+                var reader = new FileReader();
+                reader.onload = (function () {
+                    return function (e) {
+                        document.getElementById("image").src = e.target.result;
+                    };
+                })();
+                reader.readAsDataURL(this.state.imageFile);
+            }
+
             return (
                 <div className="container">
                     <Jumbotron style={container_style}>
                         <div style={image_style}>
-                            <img src={previewImg} alt="preview" style={image_style} />
+                            <img src="" alt="previewImage" style={image_style} id="image"/>
                         </div>
                     </Jumbotron>
                     {download_bar}

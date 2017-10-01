@@ -18,7 +18,6 @@ import Preview from './Preview'
 import {fireStoragePending} from './fire';
 import {fireAuth} from './fire';
 
-
 export default class Home extends Component {
     constructor(props) {
         super(props);
@@ -37,6 +36,7 @@ export default class Home extends Component {
                 }
             };
             var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
+            this.filename = file.name;
             imgRef.put(file, metadata).then(function(snapshot) {
                 console.log('uploaded file successfully');
             });
@@ -55,6 +55,8 @@ export default class Home extends Component {
                   <Col md={6} mdPush={6}><Preview convert={this.state.convert} /></Col>
                   <Col md={6} mdPull={6}><Upload currentUser={this.props.currentUser} onConvert={(file, boxes) => this.convert(file, boxes)}/></Col>
                 </Row>
+                  <Preview filename= {this.state.filename}/>
+                  <Upload filename={this.state.filename}/>
               </Grid>
             </div>
         );
