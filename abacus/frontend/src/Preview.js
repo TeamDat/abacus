@@ -134,11 +134,13 @@ export default class Upload extends React.Component {
                 </ButtonGroup>
             );
         }
-
+        //
         var download_bar = (
             <div style={download_container_style}>
                 <div style={button_container}>
+                    <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".jpg"}>
                     <Button bsStyle="primary" bsSize="large" block>Download</Button>
+                    </a>
                 </div>
                 <div style={edit_container}>
                     {editbuttons}
