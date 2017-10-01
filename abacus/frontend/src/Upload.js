@@ -13,7 +13,6 @@ import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import DragBox from './DragBox.js';
-//import apigClientFactory from 'aws-api-gateway-client';
 import {fireStoragePending} from './fire';
 import {fireAuth} from './fire';
 
@@ -35,11 +34,11 @@ export default class Upload extends React.Component {
         var imageType = /^image\//;
         if (!imageType.test(file.type)) {
             return;
-        }
+        } /*
         var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
         imgRef.put(file).then(function(snapshot) {
             console.log('uploaded file successfully');
-        });
+        });*/
         this.setState({imageFile: file});
     }
 
@@ -122,7 +121,6 @@ export default class Upload extends React.Component {
             var reader = new FileReader();
             reader.onload = (function() { return function(e) { document.getElementById("thumbnail").src = e.target.result; }; })();
             reader.readAsDataURL(this.state.imageFile);
-            console.log("rerender");
             var boxes = this.state.boxes.map((box) =>
                 <DragBox x={box.x} y={box.y} width={box.width} height={box.height} number={box.number} />)
             return (

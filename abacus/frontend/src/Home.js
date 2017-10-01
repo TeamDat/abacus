@@ -9,12 +9,12 @@
  * Ian Ewell, Logan Gillespie, Ginna Groover, Brighton Trugman, Caroline Zhang
  *******************************************************************************/
 
-import React, { Component } from 'react'
-import Grid from 'react-bootstrap/lib/Grid'
-import Row from 'react-bootstrap/lib/Row'
-import Col from 'react-bootstrap/lib/Col'
-import Upload from './Upload'
-import Preview from './Preview'
+import React, { Component } from 'react';
+import Grid from 'react-bootstrap/lib/Grid';
+import Row from 'react-bootstrap/lib/Row';
+import Col from 'react-bootstrap/lib/Col';
+import Upload from './Upload';
+import Preview from './Preview';
 import {fireStoragePending} from './fire';
 import {fireAuth} from './fire';
 
@@ -22,12 +22,13 @@ export default class Home extends Component {
     constructor(props) {
         super(props);
         this.props = props;
-        console.log(props);
-        this.state = {convert: "false"};
+        this.state = {convert: "false", filename: ""};
         this.convert = this.convert.bind(this);
     }
 
     convert(file, boxes) {
+        var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
+        this.setState({filename: file.name});
         if (boxes) {
             var boxesJSON = JSON.stringify(boxes);
             var metadata = {
@@ -35,13 +36,15 @@ export default class Home extends Component {
                     'boxes': boxesJSON
                 }
             };
-            var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
-            this.filename = file.name;
             imgRef.put(file, metadata).then(function(snapshot) {
-                console.log('uploaded file successfully');
+                console.log('convert method uploaded file with box data successfully');
             });
-            this.setState({convert: "true"});
+        } else {
+            imgRef.put(file).then(function(snapshot) {
+                console.log('convert method uploaded file without box data successfully');
+            });
         }
+        this.setState({convert: "true"});
     }
 
     render() {
@@ -52,11 +55,9 @@ export default class Home extends Component {
             <div style={style}>
               <Grid>
                 <Row>
-                  <Col md={6} mdPush={6}><Preview convert={this.state.convert} /></Col>
-                  <Col md={6} mdPull={6}><Upload currentUser={this.props.currentUser} onConvert={(file, boxes) => this.convert(file, boxes)}/></Col>
+                  <Col md={6} mdPush={6}><Preview filename={this.state.filename} convert={this.state.convert} /></Col>
+                  <Col md={6} mdPull={6}><Upload filename={this.state.filename} currentUser={this.props.currentUser} onConvert={(file, boxes) => this.convert(file, boxes)}/></Col>
                 </Row>
-                  <Preview filename= {this.state.filename}/>
-                  <Upload filename={this.state.filename}/>
               </Grid>
             </div>
         );
