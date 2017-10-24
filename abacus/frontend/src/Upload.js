@@ -13,8 +13,6 @@ import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import DragBox from './DragBox.js';
-import {fireStoragePending} from './fire';
-import {fireAuth} from './fire';
 
 
 export default class Upload extends React.Component {
@@ -29,19 +27,25 @@ export default class Upload extends React.Component {
         this.imageDrag = this.imageDrag.bind(this);
     }
 
+    /**
+     * Handle the file uploaded from the user and set its image type
+     *
+     * @param event Generated event from the html frontend code
+     */
     handleFile(event) {
         var file = event.target.files[0];
         var imageType = /^image\//;
         if (!imageType.test(file.type)) {
             return;
-        } /*
-        var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
-        imgRef.put(file).then(function(snapshot) {
-            console.log('uploaded file successfully');
-        });*/
+        }
         this.setState({imageFile: file});
     }
 
+    /**
+     * Retrieve the document uploaded by the user
+     *
+     * @param event  Generated event from the html frontend code
+     */
     uploadClicked(event) {
         var fileElem = document.getElementById("docFile");
         if (fileElem) {
@@ -49,6 +53,11 @@ export default class Upload extends React.Component {
         }
     }
 
+    /**
+     * Record the areas specified by the user
+     *
+     * @param event  Generated event from the html frontend code
+     */
     imageDrag(event) {
         event.preventDefault();
         var boxArray = this.state.boxes;
@@ -62,6 +71,12 @@ export default class Upload extends React.Component {
         this.setState({boxes: boxArray});
     }
 
+    /**
+     * Define a default box size if the user chooses not to drag or prepare a box which can be modified by the
+     * users
+     *
+     * @param event Generated event from the html frontend code
+     */
     handleImageClick(event) {
         var dragIcon = document.createElement('img');
         dragIcon.src = "blank.png";
@@ -119,22 +134,28 @@ export default class Upload extends React.Component {
 
         if (this.state.imageFile !== '') {
             var reader = new FileReader();
-            reader.onload = (function() { return function(e) { document.getElementById("thumbnail").src = e.target.result; }; })();
+            reader.onload = (function () {
+                return function (e) {
+                    document.getElementById("thumbnail").src = e.target.result;
+                };
+            })();
             reader.readAsDataURL(this.state.imageFile);
             var boxes = this.state.boxes.map((box) =>
-                <DragBox x={box.x} y={box.y} width={box.width} height={box.height} number={box.number} />)
+                <DragBox x={box.x} y={box.y} width={box.width} height={box.height} number={box.number}/>)
             return (
                 <div>
                     <Jumbotron style={container_style}>
-                        <div style={image_style} draggable="true" onDragStart={this.handleImageClick} onDrag={this.imageDrag}>
-                            <img src="" alt="nothing" id="thumbnail" style={image_style} draggable="false" />
+                        <div style={image_style} draggable="true" onDragStart={this.handleImageClick}
+                             onDrag={this.imageDrag}>
+                            <img src="" alt="nothing" id="thumbnail" style={image_style} draggable="false"/>
                         </div>
                         {boxes}
                     </Jumbotron>
                     <div style={convert_container_style}>
                         <h4>Select the document sections to be converted.</h4>
                         <div style={button_container}>
-                            <Button bsStyle="primary" bsSize="large" block onClick={() => this.props.onConvert(this.state.imageFile, this.state.boxes)}>Convert</Button>
+                            <Button bsStyle="primary" bsSize="large" block
+                                    onClick={() => this.props.onConvert(this.state.imageFile, this.state.boxes)}>Convert</Button>
                         </div>
                     </div>
                 </div>
@@ -146,7 +167,8 @@ export default class Upload extends React.Component {
                     <div style={style}>
                         <Button bsStyle="primary" bsSize="large" block onClick={this.uploadClicked}>Upload</Button>
                         <p>Or drag and drop your file here</p>
-                        <input type="file" id="docFile" accept="image/*" style={upload_style} onChange={this.handleFile} />
+                        <input type="file" id="docFile" accept="image/*" style={upload_style}
+                               onChange={this.handleFile}/>
                     </div>
                 </Jumbotron>
             </div>
