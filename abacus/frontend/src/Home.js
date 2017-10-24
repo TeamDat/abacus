@@ -26,6 +26,12 @@ export default class Home extends Component {
         this.convert = this.convert.bind(this);
     }
 
+    /**
+     * Includes dragbox info as metadata with uploaded image to send into storage for conversion
+     *
+     * @param file - imagefile uploaded by user
+     * @param boxes - dragboxes drawn on top of imagefile
+     */
     convert(file, boxes) {
         var imgRef = fireStoragePending.child(fireAuth().currentUser.uid + '/' + file.name);
         this.setState({filename: file.name});
@@ -47,6 +53,10 @@ export default class Home extends Component {
         this.setState({convert: "true"});
     }
 
+    /**
+     * Construct the contents of the component
+     * @returns {XML}
+     */
     render() {
         const style = {
             "paddingTop": "100"

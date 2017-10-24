@@ -17,6 +17,10 @@ export default class DragBox extends React.Component {
         this.props = props;
     }
 
+    /**
+     * Construct the contents of the component
+     * @returns {XML}
+     */
     render() {
         var x = this.props.x;
         var y = this.props.y;
