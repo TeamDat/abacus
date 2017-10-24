@@ -12,6 +12,10 @@
 import React, {Component} from 'react';
 import {login, loginWithGoogle, resetPassword} from './auth';
 
+/**
+ * Display error message if unsuccessful login
+ * @param {*} error Unsuccessful login error 
+ */
 function setErrorMsg(error) {
     return {
         loginMessage: error
@@ -20,6 +24,9 @@ function setErrorMsg(error) {
 
 export default class Login extends Component {
     state = {loginMessage: null};
+    /**
+     * Submit username and password
+     */
     handleSubmit = (e) => {
         e.preventDefault();
         login(this.email.value, this.pw.value)
@@ -27,6 +34,9 @@ export default class Login extends Component {
                 this.setState(setErrorMsg('Invalid username/password.'))
             })
     };
+    /**
+     * Reset password if user forgets password
+     */
     resetPassword = () => {
         resetPassword(this.email.value)
             .then(() => this.setState(setErrorMsg(`Password reset email sent to ${this.email.value}.`)))
