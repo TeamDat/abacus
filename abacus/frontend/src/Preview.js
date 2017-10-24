@@ -14,12 +14,14 @@ import React from 'react';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
-import os from 'os';
-import {fireStorage, fireStorageComplete, fireStoragePending} from "./fire";
+import {fireStorageComplete} from "./fire";
 import {fireAuth} from "./fire";
 
-
-export default class Upload extends React.Component {
+/**
+ * This component allows the user to view the results of their conversion
+ * in the requested format
+ */
+export default class Preview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {showLatex: false, imageFile: ""};
@@ -29,6 +31,12 @@ export default class Upload extends React.Component {
         this.download = this.download.bind(this);
     }
 
+    /**
+     * Gets the src URL for the converted image from Google Cloud Storage
+     *
+     * @param jpgFileName the name of the original uploaded image which will match
+     *        the file name of the converted image
+     */
     download(jpgFileName) {
         fireStorageComplete.child(fireAuth().currentUser.uid + '/' + jpgFileName).getDownloadURL().then(url => {
                 this.setState({imageFile: url});
@@ -51,20 +59,40 @@ export default class Upload extends React.Component {
             });
     }
 
+    /**
+     * Toggle view mode to TEX
+     */
     latex() {
         this.setState({showLatex: true});
     }
 
+    /**
+     * Toggle view mode to PDF
+     */
     pdf() {
         this.setState({showLatex: false});
     }
 
+    /**
+     * Construct the contents of the component
+     * @returns {XML}
+     */
     render() {
+
+        /**
+         * Sets the dimensions of the preview container
+         * @type {{width: string, height: string, position: string}}
+         */
         var container_style = {
             "width": "530",
             "height": "550",
             "position": "relative"
         };
+
+        /**
+         * Sets the style for the pre-conversion div
+         * @type {{width: string, height: string, position: string, top: string, left: string, textAlign: string, margin: string}}
+         */
         var style = {
             "width": "50%",
             "height": "25%",
@@ -75,6 +103,10 @@ export default class Upload extends React.Component {
             "margin": "-40 0 0 -170"
         };
 
+        /**
+         * Sets the style for the post-conversion div
+         * @type {{width: string, height: string, position: string, marginLeft: string, marginRight: string, marginTop: string, textAlign: string}}
+         */
         var download_container_style = {
             "width": "500",
             "height": "80",
@@ -84,6 +116,11 @@ export default class Upload extends React.Component {
             "marginTop": "0",
             "textAlign": "center"
         };
+
+        /**
+         * The following objects set the styles for the edit buttons (TEX or PDF),
+         * download button, and the preview image
+         */
 
         var button_container = {
             "width": "50%",
@@ -103,6 +140,9 @@ export default class Upload extends React.Component {
             "maxHeight": "100%"
         }
 
+        /**
+         * The user has not yet requested a conversion
+         */
         if (this.props.convert === "false") {
             return (
                 <div className="container">
@@ -118,6 +158,10 @@ export default class Upload extends React.Component {
             setTimeout(function() { this.download(jpgFileName); }.bind(this), 5000);
         }
 
+        /**
+         * Initiate the edit buttons and their actions based on the
+         * toggled view mode (TEX or PDF)
+         */
         var editbuttons;
         if (!this.state.showLatex) {
             editbuttons = (
@@ -134,7 +178,12 @@ export default class Upload extends React.Component {
                 </ButtonGroup>
             );
         }
-        //
+
+        /**
+         * This element allows the user to download the file
+         * once it is retrieved from GCS after conversion
+         * @type {XML}
+         */
         var download_bar = (
             <div style={download_container_style}>
                 <div style={button_container}>
@@ -148,6 +197,9 @@ export default class Upload extends React.Component {
             </div>
         );
 
+        /**
+         * Shows the converted image or LaTeX
+         */
         if (!this.state.showLatex) {
             return (
                 <div className="container">
