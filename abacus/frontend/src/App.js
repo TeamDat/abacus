@@ -22,6 +22,12 @@ import Home from './Home';
 import Header from "./Header";
 import About from './About';
 
+/**
+ * Creates a route to render a page that is only visible if you logged in.
+ *
+ * @param component  The component to render
+ * @param authed  Whether the user has authenticated
+ */
 function PrivateRoute({component: Component, authed, ...rest}) {
     return (
         <Route
@@ -32,6 +38,12 @@ function PrivateRoute({component: Component, authed, ...rest}) {
     )
 }
 
+/**
+ * Creates a route to render a page that is publicly visible.
+ *
+ * @param component  The component to render
+ * @param authed  Whether the user has authenticated
+ */
 function PublicRoute({component: Component, authed, ...rest}) {
     return (
         <Route
@@ -61,6 +73,11 @@ class App extends Component {
         });
     }
 
+    /**
+     * Sends feedback the user has written
+     *
+     * @param e  The event object
+     */
     addMessage(e) {
         e.preventDefault();
         fire.database().ref('messages').push({
@@ -70,6 +87,9 @@ class App extends Component {
         this.inputEl.value = '';
     }
 
+    /**
+     * Adds a listener that detects a login and updates the authed state
+     */
     componentDidMount() {
         this.removeListener = fireAuth().onAuthStateChanged((user) => {
             if (user) {
@@ -87,6 +107,9 @@ class App extends Component {
         });
     }
 
+    /**
+     * Checks to see if a login has occured
+     */
     componentWillUnmount() {
         this.removeListener();
     }
