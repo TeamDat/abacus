@@ -14,13 +14,16 @@ import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import {logout} from './auth';
+import logo from './abacus_logo.png'
 
 export default class Header extends React.Component {
     render() {
         return (
             <Navbar inverse>
                     <Navbar.Brand>
-                        <a href='/'>Abacus</a>
+                        <a href='/'>
+                            <img src={logo} alt={"Abacus"} style={{width:150}}/>
+                        </a>
                     </Navbar.Brand>
                     {this.props.authed
                         ?
