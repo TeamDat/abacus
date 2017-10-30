@@ -65,7 +65,6 @@ class App extends Component {
         };
     }
 
-    //
     componentWillMount() {
         let messagesRef = fire.database().ref('feedback').orderByKey().limitToLast(100);
         messagesRef.on('child_added', snapshot => {
