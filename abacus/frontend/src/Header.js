@@ -18,17 +18,27 @@ import logo from './abacus_logo.png'
 
 export default class Header extends React.Component {
     render() {
+        var navbar_style = {
+            "backgroundImage" : "none",
+            "backgroundColor": "black",
+            "height": "4.5em",
+        }
+
+        var logo_style = {
+            "width": "150"
+        }
+
         return (
-            <Navbar inverse>
+            <Navbar style={navbar_style}>
                     <Navbar.Brand>
                         <a href='/'>
-                            <img src={logo} alt={"Abacus"} style={{width:150}}/>
+                            <img src={logo} alt={"Abacus"} style={logo_style}/>
                         </a>
                     </Navbar.Brand>
                     {this.props.authed
                         ?
                         <Nav pullRight>
-                            <NavItem Link to href="/home">Start</NavItem>
+                            <NavItem Link to href="/home" >Start</NavItem>
                             <NavItem onClick={() => {
                                 logout();
                             }}> Logout </NavItem>
