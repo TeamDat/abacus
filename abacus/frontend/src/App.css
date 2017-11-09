@@ -64,6 +64,30 @@ svg#loader-pencil {
     animation: linePencil .8s infinite linear;
 }
 
+.App .ql-container {
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+    background: #fefcfc;
+}
+  
+/* Snow Theme */
+.App .ql-snow.ql-toolbar {
+    display: block;
+    background: #eaecec;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+  
+/* Bubble Theme */
+.App .ql-bubble .ql-editor {
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+}
+
+.App .ql-editor {
+    min-height: 18em;
+}
+
 @keyframes linePencil {
     0% {
         transform: translateY(0);

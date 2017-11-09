@@ -10,7 +10,9 @@
  *******************************************************************************/
 
 import React from 'react';
-
+import ReactDOM from 'react-dom';
+import Quill from 'quill';
+import ReactQuill from 'react-quill';  
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
@@ -24,11 +26,15 @@ import {fireAuth} from "./fire";
 export default class Preview extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showLatex: false, imageFile: ""};
-        this.props = props;
+        this.state = {showLatex: false, imageFile: "", editorHtml:'', theme:'snow'};
         this.latex = this.latex.bind(this);
         this.pdf = this.pdf.bind(this);
         this.download = this.download.bind(this);
+        this.handleChange = this.handleChange.bind(this)
+    }
+
+    handleChange (html) {
+        this.setState({ editorHtml: html });
     }
 
     /**
@@ -41,20 +47,6 @@ export default class Preview extends React.Component {
         fireStorageComplete.child(fireAuth().currentUser.uid + '/' + jpgFileName).getDownloadURL().then(url => {
                 this.setState({imageFile: url});
             }).catch( error => {
-                /*switch (error.code) {
-                    case "storage/object-not-found":
-                        var delay = Math.pow(2, n) + Math.floor(Math.random() * (2000 - 1000 + 1) + 500);
-                        if (delay <= maxBackoff && this.state.imageFile === "") {
-                            console.log("setting timeout");
-                            setTimeout(function() { this.download(jpgFileName, n+1, maxBackoff).bind(this); }.bind(this), delay);
-                        } else if (delay > maxBackoff) {
-                            console.log("reached max backoff");
-                        }
-                        break;
-                    default:
-                        console.log(error);
-                        break;
-                }*/
                 console.log(error);
             });
     }
@@ -197,6 +189,7 @@ export default class Preview extends React.Component {
             </div>
         );
 
+        
         /**
          * Shows the converted image or LaTeX
          */
@@ -226,22 +219,55 @@ export default class Preview extends React.Component {
                 </div>
             );
         } else {
-            var fillerLatex = `4 $\\delta y \\delta z {fx(x_0, y_0, z_0) + \\delta x
-\\frac{\\delta fx}{\\delta x} (x_0, y_0, z_0) + ...$\\
-
-$-(fx(x_0, y_0, z_0) - \\delta x \\frac{\\delta fx}{\\delta x} (x_0, y_0, z_0) + ...)$\\
-
-$= 4 \\delta y \\delta z { 2 \\delta x \\frac{\\delta fx}{\\delta x} (x_0, y_0, z_0) } = \\delta V \\frac{\\delta fx}{\\delta x} (x_0, y$ \\`;
+            
             return (
                 <div className="container">
                     <Jumbotron style={container_style}>
-                    <textarea rows="22" cols="55">
-                    {fillerLatex}
-                    </textarea>
+                    <div className="App">
+                    <ReactQuill 
+                        onChange={this.handleChange} 
+                        placeholder={this.props.placeholder}
+                        value={this.state.editorHtml}
+                        modules={Preview.modules}
+                        formats={Preview.formats}
+                        bounds={'.App'}
+                        theme={"snow"} // pass false to use minimal theme
+                    >
+                    <div key="editor" ref="editor" className="quill-contents" />
+                    </ReactQuill>
+                    </div>
                     </Jumbotron>
-                    {download_bar}
                 </div>
             );
         }
     }
 }
+
+/* 
+ * Quill modules to attach to editor
+ * See https://quilljs.com/docs/modules/ for complete options
+ */
+Preview.modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, 
+       {'indent': '-1'}, {'indent': '+1'}],
+      ['clean']
+    ],
+    clipboard: {
+      // toggle to add extra line breaks when pasting HTML:
+      matchVisual: false,
+    }
+  }
+
+  Preview.formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video'
+  ]
+
+
+  
+
+  
