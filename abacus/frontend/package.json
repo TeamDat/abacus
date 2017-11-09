@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "aws-api-gateway-client": "^0.2.9",
-    "aws-sdk": "^2.125.0",
+    "@google-cloud/pubsub": "^0.14.8",
     "axios": "^0.16.2",
     "bootstrap": "^3.3.7",
     "firebase": "^4.4.0",
