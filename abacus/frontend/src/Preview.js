@@ -218,8 +218,7 @@ export default class Preview extends React.Component {
                     {download_bar}
                 </div>
             );
-        } else {
-            
+        } else { 
             return (
                 <div className="container">
                     <Jumbotron style={container_style}>

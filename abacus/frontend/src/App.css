@@ -85,7 +85,7 @@ svg#loader-pencil {
 }
 
 .App .ql-editor {
-    min-height: 18em;
+    min-height: 30em;
 }
 
 @keyframes linePencil {
