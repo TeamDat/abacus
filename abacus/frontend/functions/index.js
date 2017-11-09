@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const mkdirp = require('mkdirp-promise');
 const gcs = require('@google-cloud/storage')();
 const spawn = require('child-process-promise').spawn;
-const pubsub = require('@google-cloud/pubsub');
+const pubsub = require('@google-cloud/pubsub')();
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
@@ -32,8 +32,10 @@ exports.monitor = functions.storage.bucket("abacus-pending").object().onChange(e
     const tempLocalDir = path.dirname(tempLocalFile);
     const tempLocalJPEGFile = path.join(os.tmpdir(), JPEGFilePath);
     const bucket = gcs.bucket(object.bucket);
-    const pubsubClient = pubsub.topic('completedownload');
-    const publisher = pubsubClient.publisher();
+    const topic = pubsub.topic('completedownload');
+    const publisher = topic.publisher();
+    const dataBuffer = Buffer.from(fileDir);
+
 
     return mkdirp(tempLocalDir).then(() => {
         return bucket.file(filePath).download({destination: tempLocalFile});
@@ -44,6 +46,6 @@ exports.monitor = functions.storage.bucket("abacus-pending").object().onChange(e
       }).then(() => {
         fs.unlinkSync(tempLocalJPEGFile);
         fs.unlinkSync(tempLocalFile);
-        publisher.publish(fileDir);
+        publisher.publish(dataBuffer);
       });
 });
