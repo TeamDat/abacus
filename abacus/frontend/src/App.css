@@ -31,3 +31,68 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.navbar-default .navbar-nav > li > a {
+    color: #d6d6d6 !important;
+    padding-top: 20px;
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.navbar-default .navbar-nav > li {
+    padding-right: 30px;
+}
+
+.jumbotron p {
+    margin-bottom: 0px !important;
+    margin-right: 5px !important;
+}
+
+.loader-pencil-content  {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 70vh;
+}
+
+svg#loader-pencil {
+    fill: #0a6aa1;
+    width: 80px;
+}
+
+#line {
+    animation: linePencil .8s infinite linear;
+}
+
+.App .ql-container {
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+    background: #fefcfc;
+}
+  
+/* Snow Theme */
+.App .ql-snow.ql-toolbar {
+    display: block;
+    background: #eaecec;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+  
+/* Bubble Theme */
+.App .ql-bubble .ql-editor {
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+}
+
+.App .ql-editor {
+    min-height: 30em;
+}
+
+@keyframes linePencil {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-150px);
+    }
+}

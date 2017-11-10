@@ -66,7 +66,7 @@ class App extends Component {
     }
 
     componentWillMount() {
-        let messagesRef = fire.database().ref('messages').orderByKey().limitToLast(100);
+        let messagesRef = fire.database().ref('feedback').orderByKey().limitToLast(100);
         messagesRef.on('child_added', snapshot => {
             let message = {text: snapshot.val()['value'], id: snapshot.key, user: snapshot.val()['uid']};
             this.setState({messages: [message].concat(this.state.messages)});
@@ -80,7 +80,7 @@ class App extends Component {
      */
     addMessage(e) {
         e.preventDefault();
-        fire.database().ref('messages').push({
+        fire.database().ref('feedback').push({
             value: this.inputEl.value,
             uid: this.state.currentUser
         });
