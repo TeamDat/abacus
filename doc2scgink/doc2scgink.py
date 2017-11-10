@@ -123,6 +123,7 @@ def generate_scgink(blobs, output_file):
     for blob in blobs:
         strokes.append(vectorize_blob_horizontal_scan(blob, True))
     out = open(output_file, "w")
+    out.write("SCG_INK\n")
     out.write(str(len(strokes)) + "\n")
     for stroke in strokes:
         out.write(str(len(stroke[0])) + "\n")
