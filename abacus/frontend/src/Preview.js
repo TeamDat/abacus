@@ -236,6 +236,7 @@ export default class Preview extends React.Component {
                     </ReactQuill>
                     </div>
                     </Jumbotron>
+                    {download_bar}
                 </div>
             );
         }
