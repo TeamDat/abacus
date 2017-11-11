@@ -10,9 +10,7 @@
  *******************************************************************************/
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Quill from 'quill';
-import ReactQuill from 'react-quill';  
+import ReactQuill from 'react-quill';
 import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
@@ -26,15 +24,15 @@ import {fireAuth} from "./fire";
 export default class Preview extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showLatex: false, imageFile: "", editorHtml:'', theme:'snow'};
+        this.state = {showLatex: false, imageFile: "", editorHtml: '', theme: 'snow'};
         this.latex = this.latex.bind(this);
         this.pdf = this.pdf.bind(this);
         this.download = this.download.bind(this);
         this.handleChange = this.handleChange.bind(this)
     }
 
-    handleChange (html) {
-        this.setState({ editorHtml: html });
+    handleChange(html) {
+        this.setState({editorHtml: html});
     }
 
     /**
@@ -44,11 +42,22 @@ export default class Preview extends React.Component {
      *        the file name of the converted image
      */
     download(jpgFileName) {
-        fireStorageComplete.child(fireAuth().currentUser.uid + '/' + jpgFileName).getDownloadURL().then(url => {
+        var wait = 1000;
+        var interval = setInterval(function () {
+            this.download(jpgFileName);
+            wait = wait * 2;
+
+            fireStorageComplete.child(fireAuth().currentUser.uid + '/' + jpgFileName).getDownloadURL().then(url => {
                 this.setState({imageFile: url});
-            }).catch( error => {
+            }).catch(error => {
                 console.log(error);
             });
+            if(this.state.imageFile !== "") {
+                clearInterval(interval);
+            }
+        }.bind(this), wait);
+
+
     }
 
     /**
@@ -147,7 +156,7 @@ export default class Preview extends React.Component {
             );
         } else {
             var jpgFileName = this.props.filename.split(".")[0] + ".jpg";
-            setTimeout(function() { this.download(jpgFileName); }.bind(this), 5000);
+            this.download(jpgFileName);
         }
 
         /**
@@ -180,7 +189,7 @@ export default class Preview extends React.Component {
             <div style={download_container_style}>
                 <div style={button_container}>
                     <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".jpg"}>
-                    <Button bsStyle="primary" bsSize="large" block>Download</Button>
+                        <Button bsStyle="primary" bsSize="large" block>Download</Button>
                     </a>
                 </div>
                 <div style={edit_container}>
@@ -189,7 +198,7 @@ export default class Preview extends React.Component {
             </div>
         );
 
-        
+
         /**
          * Shows the converted image or LaTeX
          */
@@ -203,9 +212,11 @@ export default class Preview extends React.Component {
                                 :
                                 <div className="loader-pencil-content">
                                     <p>Loading...</p>
-                                    <svg id="loader-pencil" xmlns="http://www.w3.org/2000/svg" width="667" height="182" viewBox="0 0 677.34762 182.15429">
+                                    <svg id="loader-pencil" xmlns="http://www.w3.org/2000/svg" width="667" height="182"
+                                         viewBox="0 0 677.34762 182.15429">
                                         <g>
-                                            <path id="body-pencil" d="M128.273 0l-3.9 2.77L0 91.078l128.273 91.076 549.075-.006V.008L128.273 0zm20.852 30l498.223.006V152.15l-498.223.007V30zm-25 9.74v102.678l-49.033-34.813-.578-32.64 49.61-35.225z">
+                                            <path id="body-pencil"
+                                                  d="M128.273 0l-3.9 2.77L0 91.078l128.273 91.076 549.075-.006V.008L128.273 0zm20.852 30l498.223.006V152.15l-498.223.007V30zm-25 9.74v102.678l-49.033-34.813-.578-32.64 49.61-35.225z">
                                             </path>
                                             <path id="line" d="M134.482 157.147v25l518.57.008.002-25-518.572-.008z">
                                             </path>
@@ -218,23 +229,23 @@ export default class Preview extends React.Component {
                     {download_bar}
                 </div>
             );
-        } else { 
+        } else {
             return (
                 <div className="container">
                     <Jumbotron style={container_style}>
-                    <div className="App">
-                    <ReactQuill 
-                        onChange={this.handleChange} 
-                        placeholder={this.props.placeholder}
-                        value={this.state.editorHtml}
-                        modules={Preview.modules}
-                        formats={Preview.formats}
-                        bounds={'.App'}
-                        theme={"snow"} // pass false to use minimal theme
-                    >
-                    <div key="editor" ref="editor" className="quill-contents" />
-                    </ReactQuill>
-                    </div>
+                        <div className="App">
+                            <ReactQuill
+                                onChange={this.handleChange}
+                                placeholder={this.props.placeholder}
+                                value={this.state.editorHtml}
+                                modules={Preview.modules}
+                                formats={Preview.formats}
+                                bounds={'.App'}
+                                theme={"snow"} // pass false to use minimal theme
+                            >
+                                <div key="editor" ref="editor" className="quill-contents"/>
+                            </ReactQuill>
+                        </div>
                     </Jumbotron>
                     {download_bar}
                 </div>
@@ -249,23 +260,23 @@ export default class Preview extends React.Component {
  */
 Preview.modules = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, 
-       {'indent': '-1'}, {'indent': '+1'}],
-      ['clean']
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{'list': 'ordered'}, {'list': 'bullet'},
+            {'indent': '-1'}, {'indent': '+1'}],
+        ['clean']
     ],
     clipboard: {
-      // toggle to add extra line breaks when pasting HTML:
-      matchVisual: false,
+        // toggle to add extra line breaks when pasting HTML:
+        matchVisual: false,
     }
-  }
+}
 
-  Preview.formats = [
+Preview.formats = [
     'header', 'font', 'size',
     'bold', 'italic', 'underline', 'strike', 'blockquote',
     'list', 'bullet', 'indent',
     'link', 'image', 'video'
-  ]
+]
 
 
   
