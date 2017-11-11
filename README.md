@@ -9,12 +9,12 @@ large number of packages built on the LaTeX platform, as well
 as the general syntax the user must learn to be able to successfully
 create a renderable document. 
 
-###Functions:
+### Functions:
 * Convert images to LaTeX (`.tex`) documents
 * Provide rendered downloads of LaTeX code in `.pdf` format
 * Provide intuitive modification of document within the users browser
 
-###Members:
+### Members:
 * Ian Ewell
 * Logan Gillespie
 * Ginna Groover
