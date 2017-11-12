@@ -74,15 +74,17 @@ export default class Preview extends React.Component {
     downloadLatex(texFileName) {
         console.log(texFileName);
         var wait = 1000;
+        for(let i = 0;i < texFileName.length; i++){
+            if(texFileName[i] === " "){
+                texFileName[i] = "_";
+            }
+        }
         var interval = setInterval(function () {
-             for(let i = 0;i < texFileName.length; i++){
-                 if(texFileName[i] === " "){
-                     texFileName[i] = "_";
-                 }
-             }
             wait = wait * 2;
             fireStorageComplete.child(fireAuth().currentUser.uid + '/' + texFileName).getDownloadURL().then(url => {
                 this.setState({texFile: url});
+                var texFileName = this.props.filename.split(".")[0] + ".tex";
+                this.setState({textFile: document.getElementById(texFileName)});
             }).catch(error => {
                 console.log(error);
             });
@@ -268,7 +270,7 @@ export default class Preview extends React.Component {
                         <div className="App">
                             <ReactQuill
                                 onChange={this.handleChange}
-                                placeholder={this.state.placeholder}
+                                placeholder={this.props.placeholder}
                                 value={this.state.texFile}
                                 modules={Preview.modules}
                                 formats={Preview.formats}
