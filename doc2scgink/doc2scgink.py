@@ -2,7 +2,7 @@ import numpy as np
 import imageio
 import sys
 
-import visvis as vv
+#import visvis as vv
 
 def load_image(file_name):
     handle = open(file_name, "r")
@@ -61,7 +61,7 @@ def create_blobs(bitmap):
                     bounds[label-1][3] += (c0-c)
                 if c > c1:
                     bounds[label-1][3] += (c-c1)
-                
+
                 # Add unlabeled neighbors to queue
                 if r + 1 < height and bitmap[r + 1, c] == False and labels[r + 1, c] == 0:
                     labels[r + 1, c] = label
@@ -89,7 +89,7 @@ def create_blobs(bitmap):
         bitmap = bitmap[bounds[i][0] : bounds[i][0]+bounds[i][2], bounds[i][1] : bounds[i][1]+bounds[i][3]]
         blobs.append(((bounds[i][0], bounds[i][1], bounds[i][2], bounds[i][3]), bitmap))
 
-    return blobs 
+    return blobs
 
 # Attempt to recover a list of strokes for a given blob
 def vectorize_blob_horizontal_scan(blob, absolute_coords=False):
@@ -166,6 +166,7 @@ greyscale = convert_to_greyscale(image)
 threshold = threshold_image(greyscale, 128)
 blobs = create_blobs(threshold)
 generate_scgink(blobs, sys.argv[2])
+"""
 fig = vv.figure()
 fig.position.w = 700
 for i in range(len(blobs)):
@@ -178,3 +179,4 @@ for i in range(len(blobs)):
     vv.plot(x, y, lc='r', ms='.', mc='g', mw=4, lw=2)
 app = vv.use()
 app.Run()
+"""
