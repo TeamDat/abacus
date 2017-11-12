@@ -24,7 +24,7 @@ import {fireAuth} from "./fire";
 export default class Preview extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showLatex: false, imageFile: "", editorHtml: '', theme: 'snow'};
+        this.state = {showLatex: false, imageFile: "", editorHtml: '', theme: 'snow', texFile:"", textFile:""};
         this.latex = this.latex.bind(this);
         this.pdf = this.pdf.bind(this);
         this.download = this.download.bind(this);
@@ -44,7 +44,11 @@ export default class Preview extends React.Component {
     download(jpgFileName) {
         var wait = 1000;
         var interval = setInterval(function () {
-            this.download(jpgFileName);
+            for(let i = 0;i < jpgFileName.length; i++){
+                if(jpgFileName[i] === " "){
+                    jpgFileName[i] = "_";
+                }
+            }
             wait = wait * 2;
 
             fireStorageComplete.child(fireAuth().currentUser.uid + '/' + jpgFileName).getDownloadURL().then(url => {
@@ -66,6 +70,29 @@ export default class Preview extends React.Component {
     latex() {
         this.setState({showLatex: true});
     }
+
+    downloadLatex(texFileName) {
+        console.log(texFileName);
+        var wait = 1000;
+        var interval = setInterval(function () {
+             for(let i = 0;i < texFileName.length; i++){
+                 if(texFileName[i] === " "){
+                     texFileName[i] = "_";
+                 }
+             }
+            wait = wait * 2;
+            fireStorageComplete.child(fireAuth().currentUser.uid + '/' + texFileName).getDownloadURL().then(url => {
+                this.setState({texFile: url});
+            }).catch(error => {
+                console.log(error);
+            });
+            if (this.state.texFile !== "") {
+                clearInterval(interval);
+            }
+
+        }.bind(this), wait);
+    }
+
 
     /**
      * Toggle view mode to PDF
@@ -156,7 +183,9 @@ export default class Preview extends React.Component {
             );
         } else {
             var jpgFileName = this.props.filename.split(".")[0] + ".jpg";
+            var texFileName = this.props.filename.split(".")[0] + ".tex";
             this.download(jpgFileName);
+            this.downloadLatex(texFileName);
         }
 
         /**
@@ -189,7 +218,10 @@ export default class Preview extends React.Component {
             <div style={download_container_style}>
                 <div style={button_container}>
                     <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".jpg"}>
-                        <Button bsStyle="primary" bsSize="large" block>Download</Button>
+                        <Button bsStyle="primary" bsSize="large" block>PDF Download</Button>
+                    </a>
+                    <a href={this.state.texFile} download={this.props.filename.split(".")[0] + ".tex"}>
+                        <Button bsStyle="primary" bsSize="large" block>Tex Download</Button>
                     </a>
                 </div>
                 <div style={edit_container}>
@@ -236,8 +268,8 @@ export default class Preview extends React.Component {
                         <div className="App">
                             <ReactQuill
                                 onChange={this.handleChange}
-                                placeholder={this.props.placeholder}
-                                value={this.state.editorHtml}
+                                placeholder={this.state.placeholder}
+                                value={this.state.texFile}
                                 modules={Preview.modules}
                                 formats={Preview.formats}
                                 bounds={'.App'}
