@@ -1,0 +1,3 @@
+LD_LIBRARY_PATH=/usr/local/lib
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/libxerces-c-3.2.so
+export LD_LIBRARY_PATH
