@@ -65,8 +65,15 @@ export default class Home extends Component {
             <div style={style}>
               <Grid>
                 <Row>
-                  <Col md={6} mdPush={6}><Preview filename={this.state.filename} convert={this.state.convert} /></Col>
-                  <Col md={6} mdPull={6}><Upload filename={this.state.filename} currentUser={this.props.currentUser} onConvert={(file, boxes) => this.convert(file, boxes)}/></Col>
+                  <Col md={6} mdPush={6}>
+                      <Preview filename={this.state.filename} convert={this.state.convert} />
+                  </Col>
+                  <Col md={6} mdPull={6}>
+                    <Upload
+                      filename={this.state.filename}
+                      currentUser={this.props.currentUser}
+                      onConvert={(file, boxes) => this.convert(file, boxes)} />
+                  </Col>
                 </Row>
               </Grid>
             </div>

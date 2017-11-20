@@ -96,3 +96,11 @@ svg#loader-pencil {
         transform: translateY(-150px);
     }
 }
+
+.footer-div {
+    padding-top: 50px;
+    width: 100%
+}
+
+.footer-content {
+}

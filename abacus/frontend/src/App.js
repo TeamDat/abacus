@@ -11,7 +11,6 @@
 
 import React, {Component} from 'react';
 import {Route, BrowserRouter, Redirect, Switch} from 'react-router-dom';
-import fire from './fire';
 import {fireAuth} from './fire';
 import './App.css';
 import './index.css';
@@ -20,7 +19,9 @@ import Login from './Login';
 import Register from './Register';
 import Home from './Home';
 import Header from "./Header";
+import Footer from "./Footer";
 import About from './About';
+import Messages from './Messages';
 
 /**
  * Creates a route to render a page that is only visible if you logged in.
@@ -58,33 +59,10 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            messages: [],
             authed: false,
             loading: true,
             currentUser: null
         };
-    }
-
-    componentWillMount() {
-        let messagesRef = fire.database().ref('feedback').orderByKey().limitToLast(100);
-        messagesRef.on('child_added', snapshot => {
-            let message = {text: snapshot.val()['value'], id: snapshot.key, user: snapshot.val()['uid']};
-            this.setState({messages: [message].concat(this.state.messages)});
-        });
-    }
-
-    /**
-     * Sends feedback the user has written
-     *
-     * @param e  The event object
-     */
-    addMessage(e) {
-        e.preventDefault();
-        fire.database().ref('feedback').push({
-            value: this.inputEl.value,
-            uid: this.state.currentUser
-        });
-        this.inputEl.value = '';
     }
 
     /**
@@ -129,31 +107,13 @@ class App extends Component {
                                 <PublicRoute authed={this.state.authed} path='/login' component={Login}/>
                                 <PublicRoute authed={this.state.authed} path='/register' component={Register}/>
                                 <PrivateRoute authed={this.state.authed} currentUser={this.state.currentUser} path='/home' component={Home}/>
-                                <Route authed={this.state.authed} path='/about' component={About}/>
+                                <PrivateRoute authed={this.state.authed} currentUser={this.state.currentUser} path='/messages' component={Messages}/>
+
                                 <Route render={() => <h3>No Match</h3>}/>
                             </Switch>
                         </div>
                     </div>
-                    <div id="feedback-container" style={{paddingTop: 100, display: 'flex', justifyContent: 'center'}}>
-                        {this.state.authed ?
-                            <div>
-                                <h4>Submit feedback:</h4>
-                                <form onSubmit={this.addMessage.bind(this)}>
-                                    <input type="text" ref={el => this.inputEl = el}/>
-                                    <input type="submit"/>
-                                </form>
-                                <h4>Your previous feedback:</h4>
-                                <ul>
-                                    {
-                                        this.state.messages.filter(message => {
-                                            return message.user === this.state.currentUser
-                                        }).map(message => <li key={message.id}>{message.text}</li>)
-                                    }
-                                </ul>
-                            </div>
-                            :
-                            <h4> Please log in to submit feedback. </h4>}
-                    </div>
+                    <Footer authed={this.state.authed}/>
                 </div>
             </BrowserRouter>
         );
