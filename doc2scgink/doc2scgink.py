@@ -3,7 +3,7 @@ import numpy as np
 import imageio
 import sys
 
-import visvis as vv
+#import visvis as vv
 
 def load_image(file_name):
     handle = open(file_name, "r")
@@ -82,7 +82,6 @@ def create_blobs(bitmap):
     # Go through the bounding boxes and generate bitmaps for each blob
     blobs = []
     for i in range(len(bounds)):
-        print bounds[i]
         # Reject the blob if its area is below a threshold
         if bounds[i][2] * bounds[i][3] <= 30:
             continue
@@ -284,6 +283,57 @@ def box_neighbors(blob, box):
 
     return sorted(neighbors, key=coverage, reverse=True)
 
+# Maps a direction (relative to a parent) to a numeric index (N:0 E:1 S:2 W:3)
+# Returns a tuple with the parent-child direction and the child-parent direction
+def direction_index(direction):
+    if direction[0] == -1:
+        return (0, 2)
+    elif direction[0] == 1:
+        return (2, 0)
+    elif direction[1] == -1:
+        return (3, 1)
+    else:
+        return (1, 3)
+
+# Takes a direction index and returns the orthogonal ones
+def orthogonal_directions(dir_index):
+    if dir_index == 0:
+        return (1, 3)
+    elif dir_index == 1:
+        return (2, 0)
+    elif dir_index == 2:
+        return (3, 1)
+    else:
+        return (0, 2)
+
+def opposite_direction(dir_index):
+    if dir_index == 0:
+        return 2
+    if dir_index == 1:
+        return 3
+    if dir_index == 2:
+        return 0
+    if dir_index == 3:
+        return 1
+    else:
+        return -1
+
+# Degree of a vertex in a graph
+def node_degree(node):
+    degree = 0
+    for edge in node:
+        if edge != -1:
+            degree += 1
+    return degree
+
+# Finds all the unused endpoints in a graph (i.e. the ends of a stroke)
+def graph_endpoints(connections, used):
+    endpoints = []
+    for index in range(len(connections)):
+        if not used[index] and node_degree(connections[index]) <= 1:
+            endpoints.append(index)
+    return endpoints
+
 def vectorize_blob_boxgrid(blob, absolute_coords=False):
     # This vectorizer attemps to recover strokes by approximating the character
     # with a graph of connecting axis-aligned squares that reasemble the character.
@@ -314,7 +364,6 @@ def vectorize_blob_boxgrid(blob, absolute_coords=False):
     # Use a coverage based heuristic to extend in the bottom left direction to get a better
     # first box
     cvg = box_coverage(bitmap, first_box)
-    print cvg
     target_cvg = cvg*0.95
     while cvg > target_cvg and corners > 0:
         first_box[1] -= 1
@@ -322,43 +371,115 @@ def vectorize_blob_boxgrid(blob, absolute_coords=False):
         first_box[3] += 1
         corners = corner_count(bitmap, first_box)
         cvg = box_coverage(bitmap, first_box)
-        print "   " + str(cvg)
 
     # Clear the box from the bitmap and find the neighboring boxes
     bitmap[first_box[0] : first_box[0] + first_box[2], first_box[1] : first_box[1] + first_box[3]] = False
     neighbors = box_neighbors(bitmap, first_box)
 
-    # Use BFS to get all the other squares
+    # Use BFS to get all the other squares and build a graph
     squares = [first_box]
-    queue = deque(neighbors)
+    connections = [[-1, -1, -1, -1]] # Neighbors are in the form [N, E, S, W]
+    used = [False] # per-box boolean used for bookkeeping when reconstructing strokes
+    queue = deque()
+    for n in neighbors:
+        queue.append((n, 0))
     while len(queue) > 0:
-        box = queue.pop()[0]
+        elem = queue.popleft()
+        box = elem[0][0] # Box coordinates
+        direction = elem[0][1] # Direction the box was extruded from the parent
+        parent = elem[1] # Index of the parent
+        parent_child, child_parent = direction_index(direction)
         if box_coverage(bitmap, box) < 0.4:
             continue
         bitmap[box[0] : box[0] + box[2], box[1] : box[1] + box[3]] = False
         for n in box_neighbors(bitmap, box):
-            queue.append(n)
+            # Append children with current node as the parent
+            queue.append((n, len(squares)))
+        # Add the node to the graph structure
+        conn = [-1, -1, -1, -1]
+        conn[child_parent] = parent
+        connections.append(conn)
+        connections[parent][parent_child] = len(squares)
         squares.append(box)
+        used.append(False)
 
-    xs = []
-    ys = []
-    for n in squares:
-        x, y = box_coords(n)
-        vv.plot(x, y, lc='r', ms='.', mc='g', mw=2, lw=3)
-        x, y = box_center_of_mass(bitmap_copy, n)
-        print x
-        print y
-        xs.append(x)
-        ys.append(y)
-    return (xs, ys)
+    # Recover strokes by tracing the graph starting with the endpoints until all
+    # the nodes in the graph are claimed
+    strokes = []
+    while len(graph_endpoints(connections, used)) > 0:
+        current_node = graph_endpoints(connections, used)[0]
+        used[current_node] = True
+        if node_degree(connections[current_node]) == 0:
+            # This node is isolated so make a single stroke and continue
+            strokes.append([current_node])
+            continue
+
+        stroke_end = False
+        incoming_direction = -1
+        stroke = [current_node]
+        while not stroke_end:
+            # If the degree is <= 2 (i.e. no stroke connections), simply follow
+            # to the next node
+            if node_degree(connections[current_node]) <= 2:
+                for i in range(4):
+                    if i != opposite_direction(incoming_direction) and connections[current_node][i] != -1:
+                        incoming_direction = i
+                        current_node = connections[current_node][i]
+                        stroke.append(current_node)
+                        used[current_node] = True
+                        break
+            # Otherwise things are more complicated
+            else:
+                # First check if there is a free node following the same direction
+                if connections[current_node][incoming_direction] != -1 and not used[connections[current_node][incoming_direction]]:
+                    # Follow into that if so
+                    current_node = connections[current_node][incoming_direction]
+                    stroke.append(current_node)
+                    used[current_node] = True
+                # Otherwise check the other directions
+                else:
+                    found = False
+                    for i in range(4):
+                        if i != opposite_direction(incoming_direction) and connections[current_node][i] != -1 and not used[connections[current_node][i]]:
+                            incoming_direction = i
+                            current_node = connections[current_node][i]
+                            stroke.append(current_node)
+                            used[current_node] = True
+                            found = True
+                    if not found:
+                        # Stroke is at its end if everything is used
+                        break
+
+            stroke_end = node_degree(connections[current_node]) <= 1
+        strokes.append(stroke)
+
+    #for n in squares:
+    #    x, y = box_coords(n)
+    #    vv.plot(x, y, lc='r', ms='.', mc='g', mw=2, lw=3)
+
+    coords = []
+    for stroke in strokes:
+        xs = []
+        ys = []
+        for node in stroke:
+            box = squares[node]
+            x, y = box_center_of_mass(bitmap_copy, box)
+            if absolute_coords:
+                xs.append(x + blob[0][1])
+                ys.append(y + blob[0][0])
+            else:
+                xs.append(x)
+                ys.append(y)
+        coords.append((xs, ys))
+
+    return coords
 
 def generate_scgink(blobs, output_file):
     strokes = []
     for blob in blobs:
-        if blob[0][2] > blob[0][3]:
-            strokes.append(vectorize_blob_horizontal_scan(blob, True))
-        else:
-            strokes.append(vectorize_blob_vertical_scan(blob, True))
+        coords = vectorize_blob_boxgrid(blob, True)
+        for stroke in coords:
+            strokes.append(stroke)
     out = open(output_file, "w")
     out.write("SCG_INK\n")
     out.write(str(len(strokes)) + "\n")
@@ -374,16 +495,18 @@ greyscale = convert_to_greyscale(image)
 threshold = threshold_image(greyscale, 128)
 blobs = create_blobs(threshold)
 generate_scgink(blobs, sys.argv[2])
-fig = vv.figure()
-fig.position.w = 700
-for i in range(len(blobs)):
+#fig = vv.figure()
+#fig.position.w = 700
+#for i in range(len(blobs)):
     #if blobs[i][0][2] > blobs[i][0][3]:
     #    x, y = vectorize_blob_horizontal_scan(blobs[i])
     #else:
     #    x, y = vectorize_blob_vertical_scan(blobs[i])
-    vv.subplot(4, 4, i+1)
-    vv.imshow(blobs[i][1])
-    x, y = vectorize_blob_boxgrid(blobs[i])
-    vv.plot(x, y, lc='r', ms='.', mc='g', mw=2, lw=1)
-app = vv.use()
-app.Run()
+#    vv.subplot(4, 4, i+1)
+#    vv.imshow(blobs[i][1])
+#    coords = vectorize_blob_boxgrid(blobs[i])
+#    for c in coords:
+#        x, y = c
+#        vv.plot(x, y, lc='g', ms='.', mc='g', mw=4, lw=2)
+#app = vv.use()
+#app.Run()
