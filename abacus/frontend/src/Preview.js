@@ -16,6 +16,7 @@ import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import {fireStorageComplete} from "./fire";
 import {fireAuth} from "./fire";
+import MathQuill from 'mathquill';
 
 /**
  * This component allows the user to view the results of their conversion
@@ -83,6 +84,12 @@ export default class Preview extends React.Component {
             wait = wait * 2;
             fireStorageComplete.child(fireAuth().currentUser.uid + '/' + texFileName).getDownloadURL().then(url => {
                 this.setState({texFile: url});
+                var texFileName = this.props.filename.split(".")[0] + ".tex";
+                var texFileContents = document.getElementById(texFileName);
+                if (texFileContents) {
+                    var reader = new FileReader();
+                    this.setState({texFile: reader.readAsText(texFileContents, "UTF-8")});
+                }
             }).catch(error => {
                 console.log(error);
             });
@@ -92,6 +99,25 @@ export default class Preview extends React.Component {
 
         }.bind(this), wait);
     }
+
+    /**
+     * Displays the latex contents
+     * @param {*} texFileName 
+     */
+    /*displayLatex(texFileName) {
+        console.log(texFileName);
+        var wait = 1000;
+        var interval = setInterval(function () {
+            const storage = require('@google-cloud/storage')();
+            storage.bucket('abacus-complete').file(fireAuth().currentUser.uid + '/' + texFileName).download().then(
+                function(data){
+                    if (data)
+                        this.setState({texContents: data.toString('utf-8')})
+                }
+            )
+
+        }.bind(this), wait);
+    }*/
 
 
     /**
@@ -262,25 +288,26 @@ export default class Preview extends React.Component {
                 </div>
             );
         } else {
+            var contents = this.state.texFile;
             return (
                 <div className="container">
-                    <Jumbotron style={container_style}>
-                        <div className="App">
-                            <ReactQuill
-                                onChange={this.handleChange}
-                                placeholder={this.state.placeholder}
-                                value={this.state.texFile}
-                                modules={Preview.modules}
-                                formats={Preview.formats}
-                                bounds={'.App'}
-                                theme={"snow"} // pass false to use minimal theme
-                            >
-                                <div key="editor" ref="editor" className="quill-contents"/>
-                            </ReactQuill>
-                        </div>
+                    <Jumbotron style={container_style} id="containerText">
+                    <div className="App">
+                    <ReactQuill
+                        onChange={this.handleChange}
+                        placeholder={this.state.placeholder}
+                        value={this.state.texFile}
+                        modules={Preview.modules}
+                        formats={Preview.formats}
+                        bounds={'.App'}
+                        theme={"snow"} // pass false to use minimal theme
+                    >
+                        <div key="editor" ref="editor" className="quill-contents" id="editor"/>
+                    </ReactQuill>
+                    </div>
                     </Jumbotron>
                     {download_bar}
-                </div>
+                </div>   
             );
         }
     }

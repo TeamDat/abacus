@@ -8,6 +8,7 @@
     "firebase": "^4.4.0",
     "firebase-admin": "^5.5.0",
     "firebase-functions": "^0.6.3",
+    "mathquill":"^0.10.1-a",
     "mkdirp-promise": "^5.0.1",
     "os": "^0.1.1",
     "react": "^15.6.2",
