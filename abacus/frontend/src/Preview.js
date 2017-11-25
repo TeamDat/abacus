@@ -88,6 +88,9 @@ export default class Preview extends React.Component {
                 var texFileContents = document.getElementById(texFileName);
                 if (texFileContents) {
                     var reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById("containerText").innerHTML = event.target.result;
+                    }
                     this.setState({texFile: reader.readAsText(texFileContents, "UTF-8")});
                 }
             }).catch(error => {
