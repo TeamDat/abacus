@@ -24,8 +24,8 @@ export default class Header extends React.Component {
             "height": "4.5em",
         }
 
-        var logo_style = {
-            "width": "150"
+        const logo_style = {
+            "width": "150px"
         }
 
         return (

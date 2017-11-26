@@ -40,10 +40,10 @@ export default class DragBox extends React.Component {
         if (number < 10) {
             var box_style = {
                 "position": "relative",
-                "width": "10",
-                "height": "20",
-                "top": "-1",
-                "left": "-10",
+                "width": "10px",
+                "height": "20px",
+                "top": "-1px",
+                "left": "-10px",
                 "backgroundColor": "#00e0f0",
                 "color": "white",
                 "fontSize": "5"
@@ -51,10 +51,10 @@ export default class DragBox extends React.Component {
         } else {
             var box_style = {
                 "position": "relative",
-                "width": "18",
-                "height": "20",
-                "top": "-1",
-                "left": "-18",
+                "width": "18px",
+                "height": "20px",
+                "top": "-1px",
+                "left": "-18px",
                 "backgroundColor": "#00e0f0",
                 "color": "white",
                 "fontSize": "5"

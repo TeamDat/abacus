@@ -141,8 +141,8 @@ export default class Preview extends React.Component {
          * @type {{width: string, height: string, position: string}}
          */
         var container_style = {
-            "width": "530",
-            "height": "550",
+            "width": "530px",
+            "height": "550px",
             "position": "relative"
         };
 
@@ -165,12 +165,12 @@ export default class Preview extends React.Component {
          * @type {{width: string, height: string, position: string, marginLeft: string, marginRight: string, marginTop: string, textAlign: string}}
          */
         var download_container_style = {
-            "width": "500",
-            "height": "80",
+            "width": "500px",
+            "height": "80px",
             "position": "relative",
-            "marginLeft": "0",
-            "marginRight": "0",
-            "marginTop": "0",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
             "textAlign": "center"
         };
 
@@ -211,10 +211,13 @@ export default class Preview extends React.Component {
                 </div>
             );
         } else {
-            var jpgFileName = this.props.filename.split(".")[0] + ".jpg";
-            var texFileName = this.props.filename.split(".")[0] + ".tex";
-            this.download(jpgFileName);
-            this.downloadLatex(texFileName);
+            if (!this.state.imageFile) {
+                console.log("spawning");
+                var jpgFileName = this.props.filename.split(".")[0] + ".jpg";
+                var texFileName = this.props.filename.split(".")[0] + ".tex";
+                this.download(jpgFileName);
+                this.downloadLatex(texFileName);
+            }
         }
 
         /**
@@ -243,7 +246,7 @@ export default class Preview extends React.Component {
          * once it is retrieved from GCS after conversion
          * @type {XML}
          */
-        var download_bar = (
+        var download_bar = this.state.imageFile ? (
             <div style={download_container_style}>
                 <div style={button_container}>
                     <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".jpg"}>
@@ -257,7 +260,7 @@ export default class Preview extends React.Component {
                     {editbuttons}
                 </div>
             </div>
-        );
+        ) : (<div/>);
 
 
         /**

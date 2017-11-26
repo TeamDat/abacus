@@ -96,14 +96,14 @@ export default class Upload extends React.Component {
 
     render() {
         var container_style = {
-            "width": "530",
-            "height": "550",
+            "width": "530px",
+            "height": "550px",
             "position": "relative",
         };
 
         var convert_container_style = {
-            "width": "500",
-            "height": "80",
+            "width": "500px",
+            "height": "80px",
             "position": "relative",
             "textAlign": "center"
         };

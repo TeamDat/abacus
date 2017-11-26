@@ -59,7 +59,7 @@ export default class Home extends Component {
      */
     render() {
         const style = {
-            "paddingTop": "75"
+            "paddingTop": "75px"
         };
         return (
             <div style={style}>
