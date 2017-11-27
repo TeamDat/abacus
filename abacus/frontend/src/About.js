@@ -15,8 +15,11 @@ import Jumbotron from 'react-bootstrap/lib/Jumbotron';
 
 export default class About extends React.Component {
     render() {
+        const style = {
+            "paddingTop": "50"
+        };
         return (
-            <div className="container">
+            <div className="container" style={style}>
                 <Jumbotron>
                     <div>
                         <h2>Abacus</h2>

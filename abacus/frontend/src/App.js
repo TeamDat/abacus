@@ -109,11 +109,14 @@ class App extends Component {
                                 <PrivateRoute authed={this.state.authed} currentUser={this.state.currentUser} path='/home' component={Home}/>
                                 <PrivateRoute authed={this.state.authed} currentUser={this.state.currentUser} path='/messages' component={Messages}/>
 
-                                <Route render={() => <h3>No Match</h3>}/>
+                                <Route render={() => <h3>Page Not Found</h3>}/>
                             </Switch>
                         </div>
                     </div>
-                    <Footer authed={this.state.authed}/>
+                    <div style={{paddingTop: 75}}>
+                        <Footer  authed={this.state.authed}/>
+                    </div>
+
                 </div>
             </BrowserRouter>
         );

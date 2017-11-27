@@ -12,7 +12,9 @@
 import React from 'react';
 import fire from './fire';
 import {fireAuth} from './fire';
-
+import Grid from 'react-bootstrap/lib/Grid';
+import Row from 'react-bootstrap/lib/Row';
+import Col from 'react-bootstrap/lib/Col';
 
 
 export default class Messages extends React.Component {
@@ -67,25 +69,35 @@ export default class Messages extends React.Component {
 
     render() {
         return (
-            <div id="feedback-container" style={{paddingTop: 100, display: 'flex', justifyContent: 'center'}}>
-                {this.state.authed ?
-                    <div>
-                        <h4>Submit feedback:</h4>
-                        <form onSubmit={this.addMessage.bind(this)}>
-                            <input type="text" ref={el => this.inputEl = el}/>
-                            <input type="submit"/>
-                        </form>
-                        <h4>Your previous feedback:</h4>
-                        <ul>
-                            {
-                                this.state.messages.filter(message => {
-                                    return message.user === this.state.currentUser
-                                }).map(message => <li key={message.id}>{message.text}</li>)
-                            }
-                        </ul>
-                    </div>
-                    :
-                    <h4> Please log in to submit feedback. </h4>}
+            <div id="feedback-container" style={{paddingTop:25, display: 'flex', justifyContent: 'center'}}>
+                <Grid >
+                    <Row>
+                        <Col md={6}>
+                            <h2>Submit feedback:</h2>
+                            <form onSubmit={this.addMessage.bind(this)}>
+                                <div>
+                            <textArea type="textArea" placeholder="Type your feedback here"
+                                      rows="7" cols="60" maxlength="10"
+                                      style={{resize: 'none'}}
+                                      ref={el => this.inputEl = el}/>
+                                </div>
+                                <input type="submit"/>
+                            </form>
+
+
+                        </Col>
+                        <Col md={6} style={{paddingTop: 50, paddingLeft: 25}}>
+                            <h4>Your previous feedback:</h4>
+                            <ul>
+                                {
+                                    this.state.messages.filter(message => {
+                                        return message.user === this.state.currentUser
+                                    }).map(message => <li key={message.id}>{message.text}</li>)
+                                }
+                            </ul>
+                        </Col>
+                    </Row>
+                </Grid>
             </div>
         );
     }
