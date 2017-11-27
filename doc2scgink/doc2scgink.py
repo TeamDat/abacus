@@ -10,7 +10,10 @@ def load_image(file_name):
     return imageio.imread(handle)
 
 def convert_to_greyscale(image):
-    channel_count = image.shape[2]
+    if len(image.shape) >= 3:
+        channel_count = image.shape[2]
+    else:
+        channel_count = 1
 
     # return if already greyscale
     if channel_count == 1:
