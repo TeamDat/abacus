@@ -79,19 +79,31 @@ create a renderable document.
    * For any other issues, create an issue on this git repository.
 
 ### Backend Setup
-##### This project is set up as a Google Cloud Platform project and requires the following steps to work in the GCP environment. We assume some experience with this platform.
-* Create an Ubuntu 16.04 (verified to work) VM with your desired attributes
+##### This project is set up as a Google Cloud Platform project and requires the following steps to work in the GCP environment. We assume some experience with this or similar cloud platforms as well as with development on Linux systems and basic Python knowledge.
+* Set up two storage buckets, one for pending input files and another for completed output files.
+* Configure a service account using `gsutil` that will alert the worker service to changes in the bucket you are using for pending files by following [these instructions](https://cloud.google.com/solutions/media-processing-pub-sub-compute-engine#creating-sa). If you do not have `gsutil` set up, you can also find the instructions [here](https://cloud.google.com/sdk/docs/#deb).
+* Create an Ubuntu 16.04 Compute Engine VM with your desired attributes. If you would like to use another OS or version you are welcome to try but the project is verified to work on this system. You should see an option to ssh into the VM after it is created.
 * Install SESHAT
   * [SESHAT: Handwritten math expression parser](https://github.com/falvaro/seshat)
     * Follow the installation and build instructions provided in the repository (dependencies include the xerces-c library, in our experience versions 3.x work best - DO NOT use apt-get, use install instructions and download from the xerces website)
-* Create a worker directory and place all files from the eponymous project directory in it
-* Troubleshooting:  
+* Determine [how to transfer files](https://cloud.google.com/compute/docs/instances/transfer-files) to the VM in your development environment.
+* Create a `worker` directory and place all files from the eponymous project directory in it; also verify that the paths to executables which are called as subprocesses in `worker.py` are correct for your VM. In this directory, also create `input` and `output` directories. You may change the directory structure but this will require changes in `worker.py`.
+* `pip install requirements.txt` to set up the worker service's dependencies.
+* `sudo apt-get install texlive-latex-base` to install `pdflatex` for PDF generation.
+* `sudo apt-get install imagemagick` for image conversion.
+* Start `worker.py` from within the worker directory with the parameter `--subscription <mytopic>` where `<mytopic>` is the name of the topic in which the previously configured service account is sending notifications. If you want the process to continue running after you disconnect from the VM, you can use `nohup` like so:  
+`nohup python worker.py --subscription <mytopic>`  
+The service should begin running and listening for events. If you need to restart the service for any reason such as updates or changes, you first need to kill the currently running service with `kill -9 <proc_num>` where `proc_num` can be seen with `pgrep -af python` to view running python processes. Then use the above command again to start the service. You can still see the output in `nohup.out`.
+* Troubleshooting:   
 If SESHAT errors and cannot find the Xerces library, try the following commands:  
 ```bash
 LD_LIBRARY_PATH=/usr/local/lib
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/libxerces-c-3.2.so
 export LD_LIBRARY_PATH
-```
+```   
+Where the path matches the location of Xerces on your machine. You can set these commands as a startup script on the VM by following [these instructions](https://cloud.google.com/compute/docs/startupscript).   
+
+#####If any steps seem to be missing or are unclear you may contact the contributors to this repository for more information or create an issue, since this readme's goal is not only to provide instructions for future contributors but also to provide a guide for beginners to this platform and aggregate information about it in an orderly way in the context of an actual functioning project.  
 
 ### Copyright
 ##### Team.Dat / Team 7147 Georgia Institute of Technology
