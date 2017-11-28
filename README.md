@@ -15,11 +15,11 @@ create a renderable document.
 * Provide intuitive modification of document within the user's browser
 
 ### Members:
-* Ian Ewell
-* Logan Gillespie
-* Ginna Groover
-* Brighton Trugman
-* Caroline Zhang
+* [Ian Ewell](https://github.com/iewell)
+* [Logan Gillespie](https://github.com/logancgillespie)
+* [Ginna Groover](https://github.com/ggroover)
+* [Brighton Trugman](https://github.com/brightont)
+* [Caroline Zhang](https://github.com/czhang363)
 
 ### Release Notes
 * Version: Abacus 1.0
@@ -44,7 +44,7 @@ create a renderable document.
     * Mathquill: 0.10.1-a
     * Firebase-admin: 5.5.1
     * Firebase-functions: 0.7.3
-    * Mkdirp-promise: 5.0.1
+    * Mkdir-promise: 5.0.1
     * OS: 0.1.1
     * React-Bootstrap: 0.31.5
     * React-Dom: 16.1.1
@@ -56,24 +56,26 @@ create a renderable document.
 ### Download Instructions (To be completed in order):
  * Git clone this repository to get our latest code
  * Download Node.js from this website for your specific computer: https://nodejs.org/en/download/
- * Install Firebase using npm install firebase (version 4.6.2 is the lastest) in command window
+ * Install Firebase using `npm install` Firebase (version 4.6.2 is the latest) in command window
  * Add Abacus project to Firebase
-   * Import google project (abacus-teamdat) via web console
+   * Create a project via web console in [Google Firebase](https://firebase.google.com/)
+   * Install Firebase command line tools
    * Run command `firebase init` in command window
-   * Follow directions on command prompt to connect your gmail account and project to the firebase CLI
+        * Default options are applicable except for the public build folder which compiles to `build`, not the default `public`
+   * Follow directions on command prompt to connect your Gmail account and project to the Firebase CLI
  * Install packages using npm install (insert packages listed above)
    * Run command `npm update` in command window
  * Build Instructions (Using command window):
-   * npm install
-   * npm run build
-   * firebase serve
+   * `npm install`
+   * `npm run build`
+   * `firebase serve`
  * Install instructions:
    * By running npm install before you build, the installation procedure for the website is complete.
  * Run instructions (Using command window):
-   * firebase deploy
+   * `firebase deploy`
  * Troubleshooting errors:
    * Must install node.js before installing any of the packages.
-   * Run npm update to reflect the updated package changes.
+   * Run `npm update` to reflect the updated package changes.
    * For any other issues, create an issue on this git repository.
 
 ### Backend Setup
@@ -91,3 +93,6 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/libxerces-c-3.2.so
 export LD_LIBRARY_PATH
 ```
 
+### Copyright
+#####Team.Dat / Team 7147 Georgia Institute of Technology
+######All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
