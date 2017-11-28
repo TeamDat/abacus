@@ -103,7 +103,7 @@ export LD_LIBRARY_PATH
 ```   
 Where the path matches the location of Xerces on your machine. You can set these commands as a startup script on the VM by following [these instructions](https://cloud.google.com/compute/docs/startupscript).   
 
-#####If any steps seem to be missing or are unclear you may contact the contributors to this repository for more information or create an issue, since this readme's goal is not only to provide instructions for future contributors but also to provide a guide for beginners to this platform and aggregate information about it in an orderly way in the context of an actual functioning project.  
+##### If any steps seem to be missing or are unclear you may contact the contributors to this repository for more information or create an issue, since this readme's goal is not only to provide instructions for future contributors but also to provide a guide for beginners to this platform and aggregate information about it in an orderly way in the context of an actual functioning project.  
 
 ### Copyright
 ##### Team.Dat / Team 7147 Georgia Institute of Technology
