@@ -80,12 +80,14 @@ create a renderable document.
 ##### This project is set up as a Google Cloud Platform project and requires the following steps to work in the GCP environment. We assume some experience with this platform.
 * Create an Ubuntu 16.04 (verified to work) VM with your desired attributes
 * Install SESHAT
-  * SESHAT: Handwritten math expression parser https://github.com/falvaro/seshat
+  * [SESHAT: Handwritten math expression parser](https://github.com/falvaro/seshat)
     * Follow the installation and build instructions provided in the repository (dependencies include the xerces-c library, in our experience versions 3.x work best - DO NOT use apt-get, use install instructions and download from the xerces website)
 * Create a worker directory and place all files from the eponymous project directory in it
-* Troubleshooting
-If SESHAT errors and cannot find the Xerces library, try the following commands:
+* Troubleshooting:  
+If SESHAT errors and cannot find the Xerces library, try the following commands:  
+```bash
 LD_LIBRARY_PATH=/usr/local/lib
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/libxerces-c-3.2.so
 export LD_LIBRARY_PATH
+```
 
