@@ -171,7 +171,7 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
             try:
                 upTexBlob = Blob(uid + "/" + filename + ".tex", completeBucket)
                 with open(texPath, "rb") as upTex:
-                    upTexBlob.upload_from_file(upTex)
+                    upTexBlob.upload_from_file(upTex, content_type="text/plain")
 
                 upInkMLBlob = Blob(uid + "/" + filename + ".inkml", completeBucket)
                 with open("output/" + uid + "/" + filename + ".inkml", "rb") as upInkML:
@@ -187,11 +187,11 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
 
                 upPDFBlob = Blob(uid + "/" + filename + ".pdf", completeBucket)
                 with open("output/" + uid + "/" + filename + ".pdf", "rb") as upPDF:
-                    upPDFBlob.upload_from_file(upPDF)
+                    upPDFBlob.upload_from_file(upPDF, content_type="application/pdf")
 
                 upJPEGBlob = Blob(uid + "/" + filename + ".jpg", completeBucket)
                 with open("output/" + uid + "/" + filename + ".jpg", "rb") as upJPEG:
-                    upJPEGBlob.upload_from_file(upJPEG)
+                    upJPEGBlob.upload_from_file(upJPEG, content_type="image/jpeg")
 
                 if debug: print "finished uploading completed files"
 
