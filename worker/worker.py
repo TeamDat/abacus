@@ -89,6 +89,7 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
             r.start(ack_ids=[ack_id], refresh=refresh, sub=subscription)
 
             start_process = datetime.datetime.now() # for future logging
+
             if debug: print "\nmaking user dirs"
             uid = msg_data['name'].split("/")[0] #get user
             #create user dirs
@@ -111,6 +112,9 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
             blob = pendingBucket.get_blob(msg_data['name'])
             inputFileName = "input/" + uid + "/" + filename + ext
             inputFile = open(str(inputFileName), "w")
+            if inputFile is None or blob is None: # don't know what to do if no valid input directory/file
+                subscription.acknowledge([ack_id])
+                break
             blob.download_to_file(inputFile)
             inputFile.close()
 
@@ -120,9 +124,15 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
             #changing inputFileName to math3.png for debugging
             #inputFileName = "math3.png"
             #filename = "math3"
-            scgcmd = "python doc2scgink.py " + inputFileName + " scg/" + uid + "/" + filename + ".scgink"
-            scgProc = subprocess.Popen(scgcmd.split(), stdout=subprocess.PIPE)
-            scgProc.wait()
+            try:
+                scgcmd = "python doc2scgink.py " + inputFileName + " scg/" + uid + "/" + filename + ".scgink"
+                scgProc = subprocess.Popen(scgcmd.split(), stdout=subprocess.PIPE)
+                scgProc.wait()
+            except IOError, e:
+                if e.errno != 2:
+                    subscription.acknowledge([ack_id])
+                    break
+
 
             if debug:
                 print "\nvectorization finished\n"
@@ -133,37 +143,63 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
             popen.wait()
             output = popen.stdout.read()
             outputStrs = output.split("LaTeX:")
-            latex = ""
+            latex = "\\documentclass{article}\n\\begin{document}\n$"
             texPath = "output/" + uid + "/" + filename + ".tex"
             if len(outputStrs) == 2: #seshat found some latex
-                latex = outputStrs[1]
-                texFile = open(str(texPath), "w")
-                texFile.write(latex)
-                texFile.close()
+                latex += outputStrs[1]
+            latex += "$\n\\end{document}"
+            texFile = open(str(texPath), "w")
+            texFile.write(latex)
+            texFile.close()
 
-            if debug: print "seshat finished, latex: " + latex
+            #convert to PDF
+            pdfproc = subprocess.Popen(("/usr/bin/pdflatex -output-directory output/" + uid + " " + texPath).split(), stdout=subprocess.PIPE)
+            pdfproc.wait()
+            pdfoutput = pdfproc.stdout.read()
+
+            #also make a jpeg for frontend display
+            imgproc = subprocess.Popen(("convert -density 150 output/" + uid + "/" + filename + ".pdf" + " -crop 450x450+270+230 output/" + uid + "/" + filename + ".jpg").split(), stdout=subprocess.PIPE)
+            imgproc.wait()
+            imgoutput = imgproc.stdout.read()
+
+            if debug: print "seshat finished and pdf generated, latex: " + latex
 
             if debug: print "uploading completed files"
 
             completeBucket = gcs_client.get_bucket('abacus-complete')
 
-            upTexBlob = Blob(uid + "/" + filename + ".tex", completeBucket)
-            with open(texPath, "rb") as upTex:
-                upTexBlob.upload_from_file(upTex)
+            try:
+                upTexBlob = Blob(uid + "/" + filename + ".tex", completeBucket)
+                with open(texPath, "rb") as upTex:
+                    upTexBlob.upload_from_file(upTex)
 
-            upInkMLBlob = Blob(uid + "/" + filename + ".inkml", completeBucket)
-            with open("output/" + uid + "/" + filename + ".inkml", "rb") as upInkML:
-                upInkMLBlob.upload_from_file(upInkML)
+                upInkMLBlob = Blob(uid + "/" + filename + ".inkml", completeBucket)
+                with open("output/" + uid + "/" + filename + ".inkml", "rb") as upInkML:
+                    upInkMLBlob.upload_from_file(upInkML)
 
-            upPGMBlob = Blob(uid + "/" + filename + ".pgm", completeBucket)
-            with open("output/" + uid + "/" + filename + ".pgm", "rb") as upPGM:
-                upPGMBlob.upload_from_file(upPGM)
+                upPGMBlob = Blob(uid + "/" + filename + ".pgm", completeBucket)
+                with open("output/" + uid + "/" + filename + ".pgm", "rb") as upPGM:
+                    upPGMBlob.upload_from_file(upPGM)
 
-            upDotBlob = Blob(uid + "/" + filename + ".dot", completeBucket)
-            with open("output/" + uid + "/" + filename + ".dot", "rb") as upDot:
-                upDotBlob.upload_from_file(upDot)
+                upDotBlob = Blob(uid + "/" + filename + ".dot", completeBucket)
+                with open("output/" + uid + "/" + filename + ".dot", "rb") as upDot:
+                    upDotBlob.upload_from_file(upDot)
 
-            if debug: print "finished uploading completed files"
+                upPDFBlob = Blob(uid + "/" + filename + ".pdf", completeBucket)
+                with open("output/" + uid + "/" + filename + ".pdf", "rb") as upPDF:
+                    upPDFBlob.upload_from_file(upPDF)
+
+                upJPEGBlob = Blob(uid + "/" + filename + ".jpg", completeBucket)
+                with open("output/" + uid + "/" + filename + ".jpg", "rb") as upJPEG:
+                    upJPEGBlob.upload_from_file(upJPEG)
+
+                if debug: print "finished uploading completed files"
+
+            except IOError, e:
+                if e.errno != 2:
+                    raise e
+
+
 
             end_process = datetime.datetime.now()
 
