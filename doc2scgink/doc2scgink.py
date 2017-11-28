@@ -215,7 +215,7 @@ def box_optimize_fill(blob, box, axis):
     width = box[3]
 
     shift_limit = height if axis[0] else width
-    shift_limit /= 2
+    shift_limit /= 1.5
 
     fill = box_coverage(blob, box)
     fill_neg = 0.0
@@ -342,8 +342,8 @@ def vectorize_blob_boxgrid(blob, absolute_coords=False):
     # with a graph of connecting axis-aligned squares that reasemble the character.
     # The strokes are then reconstructed using graph algorithms to find paths that
     # traverse the graph
-    bitmap = blob[1]
     bitmap_copy = np.array(blob[1])
+    bitmap = np.array(blob[1])
 
     # Start the first square from the first pixel in the image. Probably not the best
     # heuristic but it's quick
