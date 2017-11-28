@@ -34,48 +34,48 @@ create a renderable document.
   * Misinterprets messy handwriting.
   
 ### Install Guide:
-* Prerequisites: 
+### * Prerequisites: 
   * Firebase: 4.6.2
   * React: 16.1.1
   * Node.js: 8.9.1  
-* Dependent Libraries (also see package.json):
+### * Dependent Libraries (also see package.json):
   * Node Modules:
-   * Axios 0.16.2
-   * Bootstrap: 3.3.7
-   * Mathquill: 0.10.1-a
-   * Firebase-admin: 5.5.1
-   * Firebase-functions: 0.7.3
-   * Mkdirp-promise: 5.0.1
-   * OS: 0.1.1
-   * React-Bootstrap: 0.31.5
-   * React-Dom: 16.1.1
-   * React-Quill: 1.1.0
-   * React-Router-Dom: 4.2.2
-   * React-Scripts: 1.0.17
-   * Url-Template: 2.0.8
- * Executables:
-   * Download from: https://github.com/falvaro/seshat
-* Download Instructions (To be completed in order):
+    * Axios 0.16.2
+    * Bootstrap: 3.3.7
+    * Mathquill: 0.10.1-a
+    * Firebase-admin: 5.5.1
+    * Firebase-functions: 0.7.3
+    * Mkdirp-promise: 5.0.1
+    * OS: 0.1.1
+    * React-Bootstrap: 0.31.5
+    * React-Dom: 16.1.1
+    * React-Quill: 1.1.0
+    * React-Router-Dom: 4.2.2
+    * React-Scripts: 1.0.17
+    * Url-Template: 2.0.8
+ ### * Executables:
+    * Download from: https://github.com/falvaro/seshat
+### * Download Instructions (To be completed in order):
  * Git clone this repository to get our latest code
  * Download Node.js from this website for your specific computer: https://nodejs.org/en/download/
  * Install Firebase using npm install firebase (version 4.6.2 is the lastest) in command window
  * Add Abacus project to Firebase 
    * Import google project (abacus-teamdat) via web console
    * Run command "firebase init" in command window
-    * Follow directions on command prompt to connect your gmail account to firebase
+   * Follow directions on command prompt to connect your gmail account to firebase
  * Install packages using npm install (insert packages listed above)
  * Run commad "npm update" in command window
-* Build Instructions (Using command window):
- * npm install
- * npm run build
- * firebase serve
-* Install instructions:
+ * Build Instructions (Using command window):
+   * npm install
+   * npm run build
+   * firebase serve
+ * Install instructions:
  * By running npm install before you build, the installation procedure is complete.
-* Run instructions (Using command window):
- * firebase deploy
-* Troubleshooting errors:
- * Must install node.js before installing any of the packages. 
- * Run npm update to reflect the updated package changes.
- * For any other issues, email lg@gatech.edu.
+ * Run instructions (Using command window):
+   * firebase deploy
+ * Troubleshooting errors:
+   * Must install node.js before installing any of the packages. 
+   * Run npm update to reflect the updated package changes.
+   * For any other issues, email lg@gatech.edu.
 
  
