@@ -16,7 +16,6 @@ import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import {fireStorageComplete} from "./fire";
 import {fireAuth} from "./fire";
-//import MathQuill from 'mathquill';
 
 /**
  * This component allows the user to view the results of their conversion
@@ -25,7 +24,7 @@ import {fireAuth} from "./fire";
 export default class Preview extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showLatex: false, imageFile: "", editorHtml: '', theme: 'snow', texFile:"", textFile:""};
+        this.state = {showLatex: false, imageFile: "", editorHtml: '', theme: 'snow', texFile: "", textFile: ""};
         this.latex = this.latex.bind(this);
         this.pdf = this.pdf.bind(this);
         this.download = this.download.bind(this);
@@ -45,8 +44,8 @@ export default class Preview extends React.Component {
     download(jpgFileName) {
         var wait = 1000;
         var interval = setInterval(function () {
-            for(let i = 0;i < jpgFileName.length; i++){
-                if(jpgFileName[i] === " "){
+            for (let i = 0; i < jpgFileName.length; i++) {
+                if (jpgFileName[i] === " ") {
                     jpgFileName[i] = "_";
                 }
             }
@@ -57,7 +56,7 @@ export default class Preview extends React.Component {
             }).catch(error => {
                 console.log(error);
             });
-            if(this.state.imageFile !== "") {
+            if (this.state.imageFile !== "") {
                 clearInterval(interval);
             }
         }.bind(this), wait);
@@ -73,55 +72,38 @@ export default class Preview extends React.Component {
     }
 
     downloadLatex(texFileName) {
-        console.log(texFileName);
         var wait = 1000;
         var interval = setInterval(function () {
-             for(let i = 0;i < texFileName.length; i++){
-                 if(texFileName[i] === " "){
-                     texFileName[i] = "_";
-                 }
-             }
-            wait = wait * 2;
-            fireStorageComplete.child(fireAuth().currentUser.uid + '/' + texFileName).getDownloadURL().then(url => {
-                this.setState({texFile: url});
-                var texFileName = this.props.filename.split(".")[0] + ".tex";
-                var texFileContents = document.getElementById(texFileName);
-                if (texFileContents) {
-                    var reader = new FileReader();
-                    reader.onload = function(event) {
-                        document.getElementById("containerText").innerHTML = event.target.result;
-                    }
-                    this.setState({texFile: reader.readAsText(texFileContents, "UTF-8")});
+            for (let i = 0; i < texFileName.length; i++) {
+                if (texFileName[i] === " ") {
+                    texFileName[i] = "_";
                 }
+            }
+            wait = wait * 2;
+            var blob = new Blob();
+            fireStorageComplete.child(fireAuth().currentUser.uid + '/' + texFileName).getDownloadURL().then(url => {
+                console.log(url);
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.responseType = "blob";
+                xhr.onload = () => {
+                    blob = xhr.response;
+                    var myReader = new FileReader();
+                    myReader.onload = (event) => {
+                        this.state.texFile = myReader.result;
+                    };
+                    var text = myReader.readAsText(blob);
+                };
+                xhr.send();
+
             }).catch(error => {
                 console.log(error);
             });
             if (this.state.texFile !== "") {
                 clearInterval(interval);
             }
-
         }.bind(this), wait);
     }
-
-    /**
-     * Displays the latex contents
-     * @param {*} texFileName 
-     */
-    /*displayLatex(texFileName) {
-        console.log(texFileName);
-        var wait = 1000;
-        var interval = setInterval(function () {
-            const storage = require('@google-cloud/storage')();
-            storage.bucket('abacus-complete').file(fireAuth().currentUser.uid + '/' + texFileName).download().then(
-                function(data){
-                    if (data)
-                        this.setState({texContents: data.toString('utf-8')})
-                }
-            )
-
-        }.bind(this), wait);
-    }*/
-
 
     /**
      * Toggle view mode to PDF
@@ -165,7 +147,7 @@ export default class Preview extends React.Component {
          * @type {{width: string, height: string, position: string, marginLeft: string, marginRight: string, marginTop: string, textAlign: string}}
          */
         var download_container_style = {
-            "width": "530px",
+            "width": "500px",
             "height": "80px",
             "position": "relative",
             "marginLeft": "0px",
@@ -180,13 +162,13 @@ export default class Preview extends React.Component {
          */
 
         var button_container = {
-            "width": "70%",
+            "width": "50%",
             "height": "100%",
             "position": "absolute",
         };
 
         var edit_container = {
-            "width": "30%",
+            "width": "50%",
             "height": "100%",
             "position": "absolute",
             "right": "0%"
@@ -224,9 +206,6 @@ export default class Preview extends React.Component {
          * Initiate the edit buttons and their actions based on the
          * toggled view mode (TEX or PDF)
          */
-        var edit_button_stlye = {
-            "width": "100%"
-        };
         var editbuttons;
         if (!this.state.showLatex) {
             editbuttons = (
@@ -237,7 +216,7 @@ export default class Preview extends React.Component {
             );
         } else {
             editbuttons = (
-                <ButtonGroup style={edit_button_stlye}>
+                <ButtonGroup>
                     <Button onClick={this.pdf}>PDF</Button>
                     <Button bsStyle="primary">Edit LaTeX</Button>
                 </ButtonGroup>
@@ -249,24 +228,14 @@ export default class Preview extends React.Component {
          * once it is retrieved from GCS after conversion
          * @type {XML}
          */
-        var left_button_style = {
-            "width": "49%",
-            "float": "left"
-        };
-        var right_button_style = {
-            "width": "49%",
-            "float": "right",
-            "marginRight": "4px"
-        };
-
         var download_bar = this.state.imageFile ? (
             <div style={download_container_style}>
                 <div style={button_container}>
-                    <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".pdf"} className="btn btn-large btn-primary" style={left_button_style}>
-                        Download PDF
+                    <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".jpg"}>
+                        <Button bsStyle="primary" bsSize="large" block>PDF Download</Button>
                     </a>
-                    <a href={this.state.texFile} download={this.props.filename.split(".")[0] + ".tex"} className="btn btn-large btn-primary" style={right_button_style}>
-                        Download LaTeX
+                    <a href={this.state.texFile} download={this.props.filename.split(".")[0] + ".tex"}>
+                        <Button bsStyle="primary" bsSize="large" block>Tex Download</Button>
                     </a>
                 </div>
                 <div style={edit_container}>
@@ -284,7 +253,8 @@ export default class Preview extends React.Component {
                 <div className="container">
                     <Jumbotron style={container_style}>
                         <div style={image_style}>
-                            {this.state.imageFile ? <img src={this.state.imageFile} alt="previewImage" style={image_style} id="image"/>
+                            {this.state.imageFile ?
+                                <img src={this.state.imageFile} alt="previewImage" style={image_style} id="image"/>
                                 :
                                 <div className="loader-pencil-content">
                                     <p>Loading...</p>
@@ -310,22 +280,22 @@ export default class Preview extends React.Component {
             return (
                 <div className="container">
                     <Jumbotron style={container_style} id="containerText">
-                    <div className="App">
-                    <ReactQuill
-                        onChange={this.handleChange}
-                        placeholder={this.state.placeholder}
-                        value={this.state.texFile}
-                        modules={Preview.modules}
-                        formats={Preview.formats}
-                        bounds={'.App'}
-                        theme={"snow"} // pass false to use minimal theme
-                    >
-                        <div key="editor" ref="editor" className="quill-contents" id="editor"/>
-                    </ReactQuill>
-                    </div>
+                        <div className="App">
+                            <ReactQuill
+                                onChange={this.handleChange}
+                                placeholder={this.state.placeholder}
+                                value={this.state.texFile}
+                                modules={Preview.modules}
+                                formats={Preview.formats}
+                                bounds={'.App'}
+                                theme={"snow"} // pass false to use minimal theme
+                            >
+                                <div key="editor" ref="editor" className="quill-contents" id="editor"/>
+                            </ReactQuill>
+                        </div>
                     </Jumbotron>
                     {download_bar}
-                </div>   
+                </div>
             );
         }
     }
@@ -346,14 +316,14 @@ Preview.modules = {
         // toggle to add extra line breaks when pasting HTML:
         matchVisual: false,
     }
-}
+};
 
 Preview.formats = [
     'header', 'font', 'size',
     'bold', 'italic', 'underline', 'strike', 'blockquote',
     'list', 'bullet', 'indent',
     'link', 'image', 'video'
-]
+];
 
 
   
