@@ -24,7 +24,15 @@ import {fireAuth} from "./fire";
 export default class Preview extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showLatex: false, imageFile: "", editorHtml: '', theme: 'snow', texFile: "", textFile: ""};
+        this.state = {
+            showLatex: false,
+            imageFile: "",
+            editorHtml: '',
+            theme: 'snow',
+            texFile: "",
+            textFile: "",
+            pdfFile: ""
+        };
         this.latex = this.latex.bind(this);
         this.pdf = this.pdf.bind(this);
         this.download = this.download.bind(this);
@@ -38,21 +46,25 @@ export default class Preview extends React.Component {
     /**
      * Gets the src URL for the converted image from Google Cloud Storage
      *
-     * @param jpgFileName the name of the original uploaded image which will match
+     * @param fileName the name of the original uploaded image which will match
      *        the file name of the converted image
      */
-    download(jpgFileName) {
+    download(fileName, isPDF) {
         var wait = 1000;
         var interval = setInterval(function () {
-            for (let i = 0; i < jpgFileName.length; i++) {
-                if (jpgFileName[i] === " ") {
-                    jpgFileName[i] = "_";
+            for (let i = 0; i < fileName.length; i++) {
+                if (fileName[i] === " ") {
+                    fileName[i] = "_";
                 }
             }
             wait = wait * 2;
 
-            fireStorageComplete.child(fireAuth().currentUser.uid + '/' + jpgFileName).getDownloadURL().then(url => {
-                this.setState({imageFile: url});
+            fireStorageComplete.child(fireAuth().currentUser.uid + '/' + fileName).getDownloadURL().then(url => {
+                if (isPDF)
+                    this.setState({pdfFile: url});
+                else {
+                    this.setState({imageFile: url});
+                }
             }).catch(error => {
                 console.log(error);
             });
@@ -196,9 +208,11 @@ export default class Preview extends React.Component {
             if (!this.state.imageFile) {
                 console.log("spawning");
                 var jpgFileName = this.props.filename.split(".")[0] + ".jpg";
+                var pdfFileName = this.props.filename.split(".")[0] + ".pdf";
                 var texFileName = this.props.filename.split(".")[0] + ".tex";
-                this.download(jpgFileName);
+                this.download(jpgFileName, false);
                 this.downloadLatex(texFileName);
+                this.download(pdfFileName, true);
             }
         }
 
@@ -244,7 +258,7 @@ export default class Preview extends React.Component {
         var download_bar = this.state.imageFile ? (
             <div style={download_container_style}>
                 <div style={button_container}>
-                    <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".pdf"}
+                    <a href={this.state.pdfFile} download={this.props.filename.split(".")[0] + ".pdf"}
                        className="btn btn-large btn-primary" style={left_button_style}>
                         Download PDF
                     </a>
