@@ -70,7 +70,7 @@ create a renderable document.
    * npm run build
    * firebase serve
  * Install instructions:
- * By running npm install before you build, the installation procedure is complete.
+   * By running npm install before you build, the installation procedure is complete.
  * Run instructions (Using command window):
    * firebase deploy
  * Troubleshooting errors:
