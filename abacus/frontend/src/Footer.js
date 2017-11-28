@@ -24,6 +24,7 @@ export default class Footer extends React.Component {
                     <div className="row footer-content">
                         <NavItem Link to href="/messages">Leave Feedback</NavItem>
                         <p>If you have any questions or concerns, please contact us at <a href="mailto:info@abacus.com">info@abacus.com</a></p>
+                        <p><b>DISCLAIMER: This service is provided as is and does not guarantee either the security of uploaded documents nor the accuracy of the results. DO NOT use this service for any sensitive documents.</b></p>
                     </div>
                 </div>
             </footer>

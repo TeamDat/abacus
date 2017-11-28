@@ -59,11 +59,11 @@ export default class Home extends Component {
      */
     render() {
         const style = {
-            "paddingTop": "75px"
+            "paddingTop": "50"
         };
         return (
             <div style={style}>
-              <Grid>
+              <Grid >
                 <Row>
                   <Col md={6} mdPush={6}>
                       <Preview filename={this.state.filename} convert={this.state.convert} />

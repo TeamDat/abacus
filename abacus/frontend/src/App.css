@@ -97,10 +97,8 @@ svg#loader-pencil {
     }
 }
 
-.footer-div {
-    padding-top: 50px;
-    width: 100%
-}
-
-.footer-content {
+.feedback-container {
+    paddingTop: 100;
+    display: flex;
+    justifyContent: center
 }

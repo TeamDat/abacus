@@ -16,7 +16,7 @@ import Button from 'react-bootstrap/lib/Button';
 import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
 import {fireStorageComplete} from "./fire";
 import {fireAuth} from "./fire";
-import MathQuill from 'mathquill';
+//import MathQuill from 'mathquill';
 
 /**
  * This component allows the user to view the results of their conversion
@@ -165,7 +165,7 @@ export default class Preview extends React.Component {
          * @type {{width: string, height: string, position: string, marginLeft: string, marginRight: string, marginTop: string, textAlign: string}}
          */
         var download_container_style = {
-            "width": "500px",
+            "width": "530px",
             "height": "80px",
             "position": "relative",
             "marginLeft": "0px",
@@ -180,13 +180,13 @@ export default class Preview extends React.Component {
          */
 
         var button_container = {
-            "width": "50%",
+            "width": "70%",
             "height": "100%",
             "position": "absolute",
         };
 
         var edit_container = {
-            "width": "50%",
+            "width": "30%",
             "height": "100%",
             "position": "absolute",
             "right": "0%"
@@ -224,6 +224,9 @@ export default class Preview extends React.Component {
          * Initiate the edit buttons and their actions based on the
          * toggled view mode (TEX or PDF)
          */
+        var edit_button_stlye = {
+            "width": "100%"
+        };
         var editbuttons;
         if (!this.state.showLatex) {
             editbuttons = (
@@ -234,7 +237,7 @@ export default class Preview extends React.Component {
             );
         } else {
             editbuttons = (
-                <ButtonGroup>
+                <ButtonGroup style={edit_button_stlye}>
                     <Button onClick={this.pdf}>PDF</Button>
                     <Button bsStyle="primary">Edit LaTeX</Button>
                 </ButtonGroup>
@@ -246,14 +249,24 @@ export default class Preview extends React.Component {
          * once it is retrieved from GCS after conversion
          * @type {XML}
          */
+        var left_button_style = {
+            "width": "49%",
+            "float": "left"
+        };
+        var right_button_style = {
+            "width": "49%",
+            "float": "right",
+            "marginRight": "4px"
+        };
+
         var download_bar = this.state.imageFile ? (
             <div style={download_container_style}>
                 <div style={button_container}>
-                    <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".jpg"}>
-                        <Button bsStyle="primary" bsSize="large" block>PDF Download</Button>
+                    <a href={this.state.imageFile} download={this.props.filename.split(".")[0] + ".pdf"} className="btn btn-large btn-primary" style={left_button_style}>
+                        Download PDF
                     </a>
-                    <a href={this.state.texFile} download={this.props.filename.split(".")[0] + ".tex"}>
-                        <Button bsStyle="primary" bsSize="large" block>Tex Download</Button>
+                    <a href={this.state.texFile} download={this.props.filename.split(".")[0] + ".tex"} className="btn btn-large btn-primary" style={right_button_style}>
+                        Download LaTeX
                     </a>
                 </div>
                 <div style={edit_container}>
@@ -271,8 +284,7 @@ export default class Preview extends React.Component {
                 <div className="container">
                     <Jumbotron style={container_style}>
                         <div style={image_style}>
-                            {this.state.imageFile ?
-                                <img src={this.state.imageFile} alt="previewImage" style={image_style} id="image"/>
+                            {this.state.imageFile ? <img src={this.state.imageFile} alt="previewImage" style={image_style} id="image"/>
                                 :
                                 <div className="loader-pencil-content">
                                     <p>Loading...</p>
