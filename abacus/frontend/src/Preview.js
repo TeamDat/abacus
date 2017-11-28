@@ -82,7 +82,7 @@ export default class Preview extends React.Component {
             wait = wait * 2;
             var blob = new Blob();
             fireStorageComplete.child(fireAuth().currentUser.uid + '/' + texFileName).getDownloadURL().then(url => {
-                console.log(url);
+                this.setState({texFile: url});
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", url);
                 xhr.responseType = "blob";
@@ -90,7 +90,7 @@ export default class Preview extends React.Component {
                     blob = xhr.response;
                     var myReader = new FileReader();
                     myReader.onload = (event) => {
-                        this.state.texFile = myReader.result;
+                        this.state.textFile = myReader.result;
                     };
                     var text = myReader.readAsText(blob);
                 };
@@ -299,7 +299,7 @@ export default class Preview extends React.Component {
                             <ReactQuill
                                 onChange={this.handleChange}
                                 placeholder={this.state.placeholder}
-                                value={this.state.texFile}
+                                value={this.state.textFile}
                                 modules={Preview.modules}
                                 formats={Preview.formats}
                                 bounds={'.App'}
