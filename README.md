@@ -64,7 +64,7 @@ create a renderable document.
    * Run command "firebase init" in command window
    * Follow directions on command prompt to connect your gmail account to firebase
  * Install packages using npm install (insert packages listed above)
- * Run commad "npm update" in command window
+   * Run command "npm update" in command window
  * Build Instructions (Using command window):
    * npm install
    * npm run build
@@ -76,6 +76,6 @@ create a renderable document.
  * Troubleshooting errors:
    * Must install node.js before installing any of the packages. 
    * Run npm update to reflect the updated package changes.
-   * For any other issues, email lg@gatech.edu.
+   * For any other issues, create an issue on this git repository.
 
  
