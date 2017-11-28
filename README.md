@@ -20,3 +20,38 @@ create a renderable document.
 * Ginna Groover
 * Brighton Trugman
 * Caroline Zhang
+
+### Release Notes
+* Version: Abacus 1.0
+* Feature:
+  -Handwritten note conversion to downloadable pdf and LaTex documents
+  -User feedback 
+* Bug Fixes Since Last Release:
+  -None (Abacus 1.0 is the first release)
+* Current Bugs:
+  -Selection boxes for editing of uploaded document do not work.
+  -Cannot interpret complex equations.
+  -Misinterprets messy handwriting.
+  
+###Install Guide
+* Prerequisites: 
+  -Firebase: 4.6.2
+  -React: 16.1.1
+  -Node.js: 8.9.1  
+* Dependent Libraries (also see package.json):
+  Node Modules:
+  -Axios 0.16.2
+  -Bootstrap: 3.3.7
+  -Mathquill: 0.10.1-a
+  -Firebase-admin: 5.5.1
+  -Firebase-functions: 0.7.3
+  -Mkdirp-promise: 5.0.1
+  -OS: 0.1.1
+  -React-Bootstrap: 0.31.5
+  -React-Dom: 16.1.1
+  -React-Quill": 1.1.0
+  -React-Router-Dom: 4.2.2
+  -React-Scripts: 1.0.17
+  -Url-Template: 2.0.8
+ Executables:
+  -Download Seshat, math expression parser from: https://github.com/falvaro/seshat
