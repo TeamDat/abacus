@@ -171,7 +171,7 @@ def main(toprocess, subscription, refresh, dataset_id, table_id):
             try:
                 upTexBlob = Blob(uid + "/" + filename + ".tex", completeBucket)
                 with open(texPath, "rb") as upTex:
-                    upTexBlob.upload_from_file(upTex, content_type="text/plain")
+                    upTexBlob.upload_from_file(upTex)
 
                 upInkMLBlob = Blob(uid + "/" + filename + ".inkml", completeBucket)
                 with open("output/" + uid + "/" + filename + ".inkml", "rb") as upInkML:
