@@ -77,7 +77,7 @@ export default class Messages extends React.Component {
                             <form onSubmit={this.addMessage.bind(this)}>
                                 <div>
                             <textArea type="textArea" placeholder="Type your feedback here"
-                                      rows="7" cols="60" maxlength="10"
+                                      rows="7" cols="60" maxlength="1000"
                                       style={{resize: 'none'}}
                                       ref={el => this.inputEl = el}/>
                                 </div>
