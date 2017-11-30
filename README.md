@@ -41,7 +41,6 @@ create a renderable document.
   * Node Modules:
     * Axios 0.16.2
     * Bootstrap: 3.3.7
-    * Mathquill: 0.10.1-a
     * Firebase-admin: 5.5.1
     * Firebase-functions: 0.7.3
     * Mkdir-promise: 5.0.1
